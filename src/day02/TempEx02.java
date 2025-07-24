@@ -1,6 +1,6 @@
 package day02;
 
-public class tempEx02 {
+public class TempEx02 {
 
     // 스왑 알고리즘
     public static void main(String[] args) {
