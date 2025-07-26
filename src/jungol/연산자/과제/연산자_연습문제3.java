@@ -1,4 +1,4 @@
-package jungol.연산자;
+package jungol.연산자.과제;
 
 public class 연산자_연습문제3 {
 
