@@ -1,32 +1,27 @@
 package day04;
 
-public class SwitchEx1 {
+import java.util.Scanner;
+
+public class SwitchEx2 {
 
     public static void main(String[] args) {
-        int num = (int)(Math.random()*6)+1;
+        Scanner sc = new Scanner(System.in);
+        char grade = sc.nextLine().charAt(0);
 
-        System.out.println(num);
-        switch (num) {
-            case 1:
-                System.out.println("1");
+        // 사용자에게 A~C 중 1개의 문자를 받아
+        // 'A'면 "매우 우수", 'B'면 "우수", 'C'면 "노력 요함"을 출력
+        switch (grade) {
+            case 'A':
+                System.out.println("매우 우수");
                 break;
-            case 2:
-                System.out.println("2");
+            case 'B':
+                System.out.println("우수");
                 break;
-            case 3:
-                System.out.println(3);
-                break;
-            case 4:
-                System.out.println(4);
-                break;
-            case 5:
-                System.out.println(5);
-                break;
-            case 6:
-                System.out.println(6);
+            case 'C':
+                System.out.println("노력하세요");
                 break;
             default:
-                System.out.println("스위치 문입니다.");
+                System.out.println("성적이 잘못 입력되었습니다.");
         }
     }
 }
