@@ -6,16 +6,20 @@ public class 반복제어문3_연습문제1 {
 
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
-        int num = sc.nextInt();
-        int sum = 0;
+        int n = sc.nextInt();
 
-        int i = 0;
-        while (true) {
-            if (sum > num) {
+        // 1부터 입력한 수까지의 누적합을 계산
+        int lastNum = 1;        // 마지막으로 저장된 수
+        int total = 0;
+        while (total <= n) {    // 누적합이 입력받은 수 n보다 커질 때 반복 종료
+            total += lastNum;
+
+            if (total > n) {
                 break;
             }
-            sum += (++i);
+
+            ++lastNum;
         }
-        System.out.println(i + " " + sum);
+        System.out.println(lastNum + " " + total);
     }
 }
