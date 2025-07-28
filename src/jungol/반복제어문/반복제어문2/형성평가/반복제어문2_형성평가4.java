@@ -11,6 +11,7 @@ public class 반복제어문2_형성평가4 {
 
         for (int i = 1; i <= n; i++) {
             int num = sc.nextInt();
+
             sum += num;
         }
 

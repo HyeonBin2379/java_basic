@@ -12,6 +12,7 @@ public class 반복제어문2_형성평가8 {
         for (int i = 1; i <= row; i++) {
             for (int j = 1; j <= col; j++) {
                 int value = i*j;
+
                 System.out.print(value +  " ");
             }
             System.out.println();
