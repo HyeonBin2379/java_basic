@@ -11,7 +11,8 @@ public class 선택제어문_연습문제9 {
 
         if (a > b) {
             System.out.println(a);
-        } else if (a < b) {
+        }
+        if (a < b) {
             System.out.println(b);
         }
     }
