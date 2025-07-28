@@ -1,12 +1,11 @@
-package jungol.반복제어문;
+package jungol.반복제어문.반복제어문1;
 
 import java.util.Scanner;
 
-public class 반복제어문1_연습문제5_2 {
+public class 반복제어문1_형성평가4 {
 
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
-        int sum = 0;
         int count = 0;
 
         while (true) {
@@ -15,14 +14,10 @@ public class 반복제어문1_연습문제5_2 {
             if (num == 0) {
                 break;
             }
-
-            if (num % 2 == 1) {
-                sum += num;
+            if (num % 3 != 0 && num % 5 != 0) {
                 count++;
             }
         }
-
-        System.out.printf("홀수의 합 = %d\n", sum);
-        System.out.printf("홀수의 평균 = %d\n", sum/count);
+        System.out.println(count);
     }
 }
