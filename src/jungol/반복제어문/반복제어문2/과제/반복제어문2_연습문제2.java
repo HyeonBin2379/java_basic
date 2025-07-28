@@ -1,4 +1,4 @@
-package jungol.반복제어문.반복제어문2;
+package jungol.반복제어문.반복제어문2.과제;
 
 public class 반복제어문2_연습문제2 {
 

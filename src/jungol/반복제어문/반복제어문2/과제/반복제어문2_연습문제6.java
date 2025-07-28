@@ -1,4 +1,4 @@
-package jungol.반복제어문.반복제어문2;
+package jungol.반복제어문.반복제어문2.과제;
 
 import java.util.Scanner;
 

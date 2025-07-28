@@ -1,15 +1,15 @@
-package jungol.반복제어문.반복제어문2;
+package jungol.반복제어문.반복제어문2.자가진단;
 
 import java.util.Scanner;
 
-public class 반복제어문2_연습문제4 {
+public class 반복제어문2_자가진단4 {
 
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
-        int num = sc.nextInt();
+        int start = sc.nextInt();
         int sum = 0;
 
-        for (int i = 1; i <= num; i++) {
+        for (int i = start; i <= 100; i++) {
             sum += i;
         }
         System.out.println(sum);
