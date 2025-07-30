@@ -62,5 +62,21 @@ public class PrimitiveEqualType {
         System.out.println(arr1 == arr2);
         System.out.println(arr2 == arr3);
         System.out.println(arr3 == arr1);
+
+        System.out.println("======= 주소값 복사하여 다른 참조변수에 할당=========");
+        arr2 = arr3;
+        System.out.println("========주소값 비교===============");
+        // 참조변수 arr3에 저장된 배열의 주소값이 arr2에도 저장되어 arr2와 arr3은 동일한 배열을 참조
+        System.out.println(arr2 == arr3);
+
+        System.out.println("============");
+        for (int i : arr2) {
+            System.out.println(i);
+        }
+        System.out.println("============");
+        for (int i = 0; i < arr2.length; i++) {
+            int i1 = arr2[i];
+            System.out.println(i1);
+        }
     }
 }

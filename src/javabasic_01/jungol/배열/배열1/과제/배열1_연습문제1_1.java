@@ -9,9 +9,6 @@ public class 배열1_연습문제1_1 {
         int[] arr = new int[5];
         for (int i = 0; i < 5; i++) {
             arr[i] = sc.nextInt();
-        }
-
-        for (int i = 0; i < 5; i++) {
             System.out.print(arr[i] + " ");
         }
     }

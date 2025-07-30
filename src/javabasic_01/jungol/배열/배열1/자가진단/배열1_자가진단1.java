@@ -9,9 +9,6 @@ public class 배열1_자가진단1 {
         char[] arr = new char[10];
         for (int i = 0; i < 10; i++) {
             arr[i] = sc.next().charAt(0);
-        }
-
-        for (int i = 0; i < 10; i++) {
             System.out.print(arr[i]);
         }
     }
