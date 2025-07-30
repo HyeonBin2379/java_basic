@@ -1,13 +1,14 @@
 package javabasic_01.jungol.배열.배열1.연습문제;
 
+import java.time.LocalDate;
 import java.util.Scanner;
 
 public class 배열1_연습문제5 {
 
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
-        int[] leapYear = {0, 31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
-        int[] normalYear = {0, 31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
+//        int[] leapYear = {0, 31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
+//        int[] normalYear = {0, 31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
 
         while (true) {
             System.out.print("YEAR = ");
@@ -23,11 +24,13 @@ public class 배열1_연습문제5 {
                 continue;
             }
 
-            if ((year % 4 == 0) && (year % 100 != 0 || year % 400 == 0)) {
-                System.out.printf("입력하신 달의 날 수는 %d일입니다.\n", leapYear[month]);
-            } else {
-                System.out.printf("입력하신 달의 날 수는 %d일입니다.\n", normalYear[month]);
-            }
+//            if ((year % 4 == 0) && (year % 100 != 0 || year % 400 == 0)) {
+//                System.out.printf("입력하신 달의 날 수는 %d일입니다.\n", leapYear[month]);
+//            } else {
+//                System.out.printf("입력하신 달의 날 수는 %d일입니다.\n", normalYear[month]);
+//            }
+            LocalDate localDate = LocalDate.of(year, month, 1);
+            System.out.printf("입력하신 달의 날 수는 %d일입니다.\n", localDate.lengthOfMonth());
         }
     }
 }

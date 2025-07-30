@@ -11,6 +11,10 @@ public class 배열1_연습문제3 {
             arr[i] = sc.nextInt();
         }
 
-        System.out.printf("%d %d %d\n", arr[2], arr[4], arr[9]);
+        for (int i = 1; i <= 10; i++) {
+            if (i == 3 || i == 5 || i == 10) {
+                System.out.printf("%d ", arr[i-1]);
+            }
+        }
     }
 }

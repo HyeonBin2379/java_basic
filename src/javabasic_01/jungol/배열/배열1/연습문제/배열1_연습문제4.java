@@ -9,7 +9,7 @@ public class 배열1_연습문제4 {
         int[] arr = new int[100];
         int index = 0;
 
-        while (true) {
+        while (index < 100) {
             int num = sc.nextInt();
             if (num == 0) {
                 break;
