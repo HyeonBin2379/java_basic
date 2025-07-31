@@ -24,11 +24,21 @@ public class DoubleArrayEx01 {
         scores[2][2] = 90;
         // scores[2] = {100, 90, 90};
 
+        // 학생별 국어, 영어, 수학 점수 출력
+        for (int i = 0; i < 3; i++) {
+            System.out.printf((i+1) + "번째 학생의 점수 출력:\n");
+            System.out.printf("국어: %d, 영어: %d, 수학 %d\n", scores[i][0], scores[i][1], scores[i][2]);
+        }
+
+        // 학생별 과목 점수 총합과 평균 계산
         for (int i = 0; i < 3; i++) {
             int total = 0;
             for (int j = 0; j < 3; j++) {
+                // 학생별 점수 총합 계산
                 total += scores[i][j];
             }
+
+            // 학생별 과목 평균 점수 계산(과목의 개수는 배열의 길이 정보를 사용)
             double avg = (double)total/scores[i].length;
             System.out.printf("학생 %d의 과목별 점수의 총점: %d, 평균: %.1f\n", i+1, total, avg);
         }
