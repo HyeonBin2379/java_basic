@@ -13,7 +13,6 @@ public class ObjectArrayExam {
         Movie movie3 = new Movie();
         movie3.title = "영화C";
 
-
         Movie[] movieList = new Movie[3];
         movieList[0] = movie1;
         movieList[1] = movie2;
