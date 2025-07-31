@@ -13,24 +13,17 @@ public class JavaBasic8 {
     private static int remainedMoney;
 
     public static void main(String[] args) throws Exception {
-        Menu:
         while (true) {
             int menuNumber = selectMenu();
             switch (menuNumber) {
-                case 1:
-                    deposit();
-                    break;
-                case 2:
-                    withdraw();
-                    break;
-                case 3:
-                    System.out.printf("잔고>%d\n", remainedMoney);
-                    break;
-                case 4:
+                case 1 -> deposit();
+                case 2 -> withdraw();
+                case 3 -> System.out.printf("잔고>%d\n", remainedMoney);
+                case 4 -> {
                     System.out.println("\n프로그램 종료");
-                    break Menu;
-                default:
-                    System.out.println("1~4 사이의 숫자만 입력해주세요.");
+                    return;
+                }
+                default -> System.out.println("1~4 사이의 숫자만 입력해주세요.");
             }
             System.out.println();
         }
