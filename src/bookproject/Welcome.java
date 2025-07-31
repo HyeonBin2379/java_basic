@@ -1,4 +1,4 @@
-package javabasic_01.day05;
+package bookproject;
 
 import java.util.Scanner;
 
@@ -16,10 +16,9 @@ public class Welcome {
              %-20s\t%s
             ******************************************************* 
             """;
+    private static final Scanner sc = new Scanner(System.in);
 
     public static void main(String[] args) {
-        Scanner sc = new Scanner(System.in);
-
         // 이름과 연락처 입력
         System.out.print("당신의 이름을 입력하세요. : ");
         String name = sc.nextLine();
