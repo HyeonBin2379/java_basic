@@ -35,16 +35,9 @@ public class JavaBasic9 {
                     }
                     break;
                 case 4:
-                    int max = 0;
-                    for (int i = 0; i < scores.length; i++) {
-                        max = Math.max(scores[i], max);
-                    }
+                    int max = getMaxScore();
                     System.out.printf("최고 점수: %d\n", max);
-                    int total = 0;
-                    for (int i = 0; i < scores.length; i++) {
-                        total += scores[i];
-                    }
-                    double avg = (double)total/scores.length;
+                    double avg = getAverageScore();
                     System.out.printf("평균 점수: %.1f\n", avg);
                     break;
                 case 5:
@@ -54,5 +47,21 @@ public class JavaBasic9 {
                     System.out.println("1~5 사이의 정수를 입력해주세요.");
             }
         }
+    }
+
+    public static int getMaxScore() {
+        int max = 0;
+        for (int i = 0; i < scores.length; i++) {
+            max = Math.max(scores[i], max);
+        }
+        return max;
+    }
+
+    public static double getAverageScore() {
+        int total = 0;
+        for (int i = 0; i < scores.length; i++) {
+            total += scores[i];
+        }
+        return (double)total/scores.length;
     }
 }
