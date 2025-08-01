@@ -9,17 +9,17 @@ public class JavaBasic9 {
             -------------------------------------------------
             1.학생수 | 2.점수입력 | 3.점수리스트 | 4.분석 | 5.종료
             -------------------------------------------------""";
-    private static int[] scores;
+    private static int[] scores;    // 점수 정보
 
     public static void main(String[] args) {
         while (true) {
-            int menuNumber = selectMenu();
+            int menuNumber = selectMenu();  // 메뉴 번호
 
             switch (menuNumber) {
-                case 1 -> makeArray();
-                case 2 -> setScores();
-                case 3 -> printScores();
-                case 4 -> printMaxAndAverage();
+                case 1 -> makeArray();          // 배열 생성
+                case 2 -> setScores();          // 학생별 점수 입력
+                case 3 -> printScores();        // 학생별 점수 출력
+                case 4 -> printMaxAndAverage(); // 최고점과 전체 평균 출력
                 case 5 -> {
                     System.out.println("프로그램 종료");
                     return;

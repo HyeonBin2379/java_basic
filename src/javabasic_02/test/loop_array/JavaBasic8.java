@@ -10,17 +10,17 @@ public class JavaBasic8 {
             1.예금 | 2.출금 | 3.잔고 | 4.종료
             -------------------------------""";
 
-    private static int remainedMoney;
+    private static int remainedMoney;   // 남은 금액
 
     public static void main(String[] args) throws Exception {
         while (true) {
-            int menuNumber = selectMenu();
+            int menuNumber = selectMenu();  // 메뉴 번호 입력
             switch (menuNumber) {
-                case 1 -> deposit();
-                case 2 -> withdraw();
-                case 3 -> System.out.printf("잔고>%d\n", remainedMoney);
+                case 1 -> deposit();        // 1. 예금
+                case 2 -> withdraw();       // 2. 출금
+                case 3 -> System.out.printf("잔고>%d\n", remainedMoney);  // 3. 잔고 출력
                 case 4 -> {
-                    System.out.println("\n프로그램 종료");
+                    System.out.println("\n프로그램 종료");    // 프로그램 종료
                     return;
                 }
                 default -> System.out.println("1~4 사이의 숫자만 입력해주세요.");
