@@ -1,0 +1,13 @@
+package javabasic_02.day09.methods;
+
+public class MyCalculator1 {
+
+    int[] numbers = new int[2];
+
+    public void adder(int[] numbers) {
+        int n1 = numbers[0];
+        int n2 = numbers[1];
+
+        System.out.println(n1+n2);
+    }
+}
