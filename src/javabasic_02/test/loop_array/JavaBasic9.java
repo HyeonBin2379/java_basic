@@ -8,43 +8,74 @@ public class JavaBasic9 {
     private static final String MENU = """
             -------------------------------------------------
             1.학생수 | 2.점수입력 | 3.점수리스트 | 4.분석 | 5.종료
-            -------------------------------------------------""";
-    private static int[] scores;    // 점수 정보
+            -------------------------------------------------
+            선택>\s""";
+
+    private static int[] scores;
+    private static boolean isRunning = true;
 
     public static void main(String[] args) {
-        while (true) {
-            int menuNumber = selectMenu();  // 메뉴 번호
+        run();
+    }
 
-            switch (menuNumber) {
-                case 1 -> makeArray();          // 배열 생성
-                case 2 -> setScores();          // 학생별 점수 입력
-                case 3 -> printScores();        // 학생별 점수 출력
-                case 4 -> printMaxAndAverage(); // 최고점과 전체 평균 출력
-                case 5 -> {
-                    System.out.println("프로그램 종료");
-                    return;
+    public static void run() {
+        while (isRunning) {
+            try {
+                int menuNumber = selectMenu();
+
+                switch (menuNumber) {
+                    case 1 -> makeArray();
+                    case 2 -> setScores();
+                    case 3 -> printScores();
+                    case 4 -> analyze();
+                    case 5 -> exitMenu();
                 }
-                default -> System.out.println("1~5 사이의 정수를 입력해주세요.");
+            } catch (NullPointerException e) {
+                System.out.println("점수리스트가 존재하지 않아 작업을 수행할 수 없습니다.");
             }
         }
     }
-
     public static int selectMenu() {
-        System.out.println(MENU);
-        System.out.print("선택> ");
-        return sc.nextInt();
+        try {
+            System.out.print(MENU);
+            int menuNumber = Integer.parseInt(sc.nextLine());
+            if (menuNumber < 1 || menuNumber > 5) {
+                throw new NumberFormatException("1~5 사이의 숫자를 입력해주세요.");
+            }
+            return menuNumber;
+        } catch (NumberFormatException e) {
+            System.out.println(e.getMessage());
+            return selectMenu();
+        }
     }
 
     public static void makeArray() {
-        System.out.print("학생수> ");
-        int len = sc.nextInt();
-        scores = new int[len];
+        try {
+            System.out.print("학생수> ");
+            int len = Integer.parseInt(sc.nextLine());
+            if (len == 0) {
+                throw new NumberFormatException();
+            }
+            scores = new int[len];
+        } catch (NumberFormatException | NegativeArraySizeException e) {
+            System.out.println("유효하지 않은 학생수입니다.");
+            makeArray();
+        }
     }
 
     public static void setScores() {
         for (int i = 0; i < scores.length; i++) {
-            System.out.printf("scores[%d]: ", i);
-            scores[i] = sc.nextInt();
+            try {
+                System.out.printf("scores[%d]: ", i);
+                int score = Integer.parseInt(sc.nextLine());
+                if (score < 0 || score > 100) {
+                    throw new NumberFormatException("0~100 사이의 숫자만 점수로 입력 가능합니다.");
+                }
+                scores[i] = score;
+            } catch (NumberFormatException e) {
+                System.out.printf("%d번 학생의 점수가 유효하지 않습니다. 다시 입력해주세요.\n", i);
+                i--;
+            }
         }
     }
 
@@ -54,26 +85,31 @@ public class JavaBasic9 {
         }
     }
 
-    public static void printMaxAndAverage() {
+    public static void analyze() {
         int max = getMaxScore();
-        System.out.printf("최고 점수: %d\n", max);
         double avg = getAverageScore();
-        System.out.printf("평균 점수: %.1f\n", avg);
+
+        System.out.printf("최고 점수: %d\n평균 점수: %.1f\n", max, avg);
     }
 
-    private static int getMaxScore() {
+    public static int getMaxScore() {
         int max = 0;
-        for (int i = 0; i < scores.length; i++) {
-            max = Math.max(scores[i], max);
+        for (int score : scores) {
+            max = Math.max(score, max);
         }
         return max;
     }
 
-    private static double getAverageScore() {
+    public static double getAverageScore() {
         int total = 0;
-        for (int i = 0; i < scores.length; i++) {
-            total += scores[i];
+        for (int score : scores) {
+            total += score;
         }
         return (double)total/scores.length;
+    }
+
+    public static void exitMenu() {
+        System.out.println("프로그램 종료");
+        isRunning = false;
     }
 }
