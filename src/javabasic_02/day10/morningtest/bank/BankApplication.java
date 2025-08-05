@@ -55,25 +55,31 @@ public class BankApplication {
         try {
             System.out.print("계좌번호: ");
             String accountNum = SC.nextLine();
-
-            System.out.print("계좌주: ");
-            String owner = SC.nextLine();
-
-            System.out.print("초기입금액: ");    // 금액은 0 이상의 양의 정수
-            int balance = Integer.parseUnsignedInt(SC.nextLine());
-
+            if (accountNum.isEmpty()) {
+                throw new IllegalArgumentException("계좌번호를 입력해 주세요.");
+            }
             if (hasAccount(accountNum)) {
                 System.out.println("이미 존재하는 계좌입니다. 계좌를 생성할 수 없습니다.");
                 return;
             }
+
+            System.out.print("계좌주: ");
+            String owner = SC.nextLine();
+            if (owner.isEmpty()) {
+                throw new IllegalArgumentException("계좌주를 입력해 주세요.");
+            }
+
+            System.out.print("초기입금액: ");    // 금액은 0 이상의 양의 정수
+            int balance = Integer.parseUnsignedInt(SC.nextLine());
 
             // 생성된 계좌를 계좌목록에 저장한 다음, count를 1 증가시켜 저장된 계좌의 수 갱신
             Account newAccount = new Account(accountNum, owner, balance);
             accounts[count++] = newAccount;
 
             System.out.println("결과: 계좌가 생성되었습니다.");
-        } catch (NumberFormatException e) {
+        } catch (IllegalArgumentException e) {
             System.out.println(e.getMessage());
+            createAccount();    // 입력 중 예외 발생 시 처음부터 다시 진행
         }
     }
     private static boolean hasAccount(String accountNo) {
@@ -94,7 +100,10 @@ public class BankApplication {
             System.out.printf(TITLE_FORMAT, "예금");
             // 입금할 계좌번호, 입금액 입력
             System.out.print("계좌번호: ");
-            String accountNo = SC.nextLine();
+            String accountNum = SC.nextLine();
+            if (accountNum.isEmpty()) {
+                throw new IllegalArgumentException("계좌번호를 입력해 주세요.");
+            }
 
             // 금액은 항상 0 이상의 양의 정수를 입력해야 함 - 이 범위 바깥의 정수 입력 시 NumberFormatException 발생
             System.out.print("예금액: ");
@@ -103,7 +112,7 @@ public class BankApplication {
             for (int i = 0; i < count; i++) {
                 String account = accounts[i].getAccountNo();
 
-                if (account.equals(accountNo)) {    // 찾는 계좌가 존재
+                if (account.equals(accountNum)) {    // 찾는 계좌가 존재
                     // 예금 이후 금액 계산 후 갱신
                     int afterDeposit = accounts[i].getBalance() + money;
                     accounts[i].setBalance(afterDeposit);
@@ -111,9 +120,9 @@ public class BankApplication {
                 }
             }
             System.out.println("결과: 입금할 계좌가 존재하지 않습니다.");
-        } catch (NumberFormatException e) {
+        } catch (IllegalArgumentException e) {
             System.out.println(e.getMessage());
-            deposit();  // 예금액 잘못 입력 시 처음부터 재입력
+            deposit();  // 예금액 잘못 입력 시 처음부터 다시 진행
         }
     }
 
@@ -123,7 +132,10 @@ public class BankApplication {
             System.out.printf(TITLE_FORMAT, "출금");
             // 출금할 계좌번호, 출금액 입력
             System.out.print("계좌번호: ");
-            String accountNo = SC.nextLine();
+            String accountNum = SC.nextLine();
+            if (accountNum.isEmpty()) {
+                throw new IllegalArgumentException("계좌번호를 입력해 주세요.");
+            }
 
             // 금액은 항상 0 이상의 양의 정수를 입력해야 함 - 이 범위 바깥의 정수 입력 시 NumberFormatException 발생
             System.out.print("출금액: ");
@@ -132,7 +144,7 @@ public class BankApplication {
             for (int i = 0; i < count; i++) {
                 String account = accounts[i].getAccountNo();
 
-                if (account.equals(accountNo)) {    // 찾는 계좌가 존재
+                if (account.equals(accountNum)) {    // 찾는 계좌가 존재
                     // 출금 이후 금액 계산 후 갱신
                     int afterWithdraw = accounts[i].getBalance() - money;
                     accounts[i].setBalance(afterWithdraw);
@@ -141,7 +153,7 @@ public class BankApplication {
                 }
             }
             System.out.println("결과: 출금할 계좌가 존재하지 않습니다.");
-        } catch (NumberFormatException e) {
+        } catch (IllegalArgumentException e) {
             System.out.println(e.getMessage());
         }
     }
