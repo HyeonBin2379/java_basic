@@ -3,7 +3,7 @@ package javabasic_02.day10.morningtest.bank;
 public class Account {
 
     private static final int MIN_BALANCE = 0;
-    private static final int MAX_BALANCE = 1000000;
+    private static final int MAX_BALANCE = (int)1e6;
 
     private final String accountNo;   // 계좌번호
     private final String owner;           // 계좌 소유주
@@ -13,7 +13,7 @@ public class Account {
     public Account(String accountNo, String owner, int balance) {
         this.accountNo = accountNo;
         this.owner = owner;
-        this.balance = balance;
+        setBalance(balance);
     }
 
     public String getAccountNo() {
@@ -30,7 +30,7 @@ public class Account {
 
     public void setBalance(int balance) {
         if (balance < MIN_BALANCE || balance > MAX_BALANCE) {
-            throw new NumberFormatException("금액 범위를 초과하였습니다.");
+            throw new NumberFormatException("계좌 잔고 한도를 초과했거나, 잔고가 부족합니다.");
         }
         this.balance = balance;
     }
