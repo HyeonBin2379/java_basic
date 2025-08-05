@@ -62,7 +62,7 @@ public class BankApplication {
             System.out.print("초기입금액: ");    // 계산해야 하므로 정수 형변환
             int balance = Integer.parseUnsignedInt(SC.nextLine());
 
-            // 계좌 생성 후 계좌목록에 저장
+            // 계좌 생성 후 계좌목록에 저장하고, count를 1 증가시켜 저장된 계좌의 수 갱신
             Account newAccount = new Account(accountNum, owner, balance);
             accounts[count++] = newAccount;
             System.out.println("결과: 계좌가 생성되었습니다.");
@@ -111,6 +111,7 @@ public class BankApplication {
     private static void withdraw() {
         try {
             System.out.printf(TITLE_FORMAT, "출금");
+            // 계좌번호, 출금액 입력
             System.out.print("계좌번호: ");
             String accountNo = SC.nextLine();
             System.out.print("출금액: ");
