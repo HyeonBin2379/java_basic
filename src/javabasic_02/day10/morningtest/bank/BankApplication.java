@@ -4,7 +4,9 @@ import java.util.Scanner;
 
 public class BankApplication {
 
-    private static final Scanner sc = new Scanner(System.in);
+    private static final Scanner SC = new Scanner(System.in);
+
+    // 각 메뉴 출력 형식
     private static final String MENU = """
             ---------------------------------------------
             1.계좌생성 | 2.계좌목록 | 3.예금 | 4.출금 | 5.종료
@@ -16,10 +18,11 @@ public class BankApplication {
             %s
             -----------
             """;
-    private static final Account[] accounts = new Account[100];
+
+    private static final Account[] accounts = new Account[100]; // 계좌 목록
+    private static int count;   // 개설된 계좌의 개수
 
     private static boolean isRunning = true;
-    private static int count;
 
     public static void main(String[] args) {
         while (isRunning) {
@@ -29,101 +32,100 @@ public class BankApplication {
 
     public static void selectMenu() {
         try {
+            // 메뉴 번호 선택
             System.out.print(MENU);
-            int menuNum = Integer.parseInt(sc.nextLine());
+            int choice = Integer.parseInt(SC.nextLine());
 
-            switch (menuNum) {
-                case 1:
-                    addNewAccount();
-                    break;
-                case 2:
-                    printAccounts();
-                    break;
-                case 3:
-                    deposit();
-                    break;
-                case 4:
-                    withdraw();
-                    break;
-                case 5:
-                    exitMenu();
-                    break;
-                default:
-                    System.out.println("1~5 사이의 숫자만 입력 가능합니다.");
+            switch (choice) {
+                case 1 -> createAccount();
+                case 2 -> accountList();
+                case 3 -> deposit();
+                case 4 -> withdraw();
+                case 5 -> exitApp();
+                default -> System.out.println("1~5 사이의 숫자만 입력 가능합니다.");
             }
-        } catch (NumberFormatException e) {
-            System.out.println(e.getMessage());
+        } catch (NumberFormatException ne) {
+            System.out.println(ne.getMessage());
         }
     }
 
-    public static void addNewAccount() {
+    // 1. 계좌 생성
+    private static void createAccount() {
         System.out.printf(TITLE_FORMAT, "계좌생성");
-
-        System.out.print("계좌번호: ");
-        String accountNum = sc.nextLine();
-        System.out.print("계좌주: ");
-        String name = sc.nextLine();
-
         try {
-            System.out.print("초기입금액: ");
-            int balance = Integer.parseInt(sc.nextLine());
+            System.out.print("계좌번호: ");
+            String accountNum = SC.nextLine();
 
-            if (balance < 0) {
-                throw new NumberFormatException("잔고는 음수가 될 수 없습니다.");
-            }
-            Account newAccount = new Account(accountNum, name, balance);
+            System.out.print("계좌주: ");
+            String owner = SC.nextLine();
+
+            System.out.print("초기입금액: ");    // 계산해야 하므로 정수 형변환
+            int balance = Integer.parseUnsignedInt(SC.nextLine());
+
+            // 계좌 생성 후 계좌목록에 저장
+            Account newAccount = new Account(accountNum, owner, balance);
             accounts[count++] = newAccount;
             System.out.println("결과: 계좌가 생성되었습니다.");
         } catch (NumberFormatException e) {
             System.out.println(e.getMessage());
-            addNewAccount();
+            createAccount();    // 예외 발생 시 처음부터 다시 진행
         }
     }
 
-    public static void printAccounts() {
+    // 2. 계좌목록 보기 기능
+    private static void accountList() {
         System.out.printf(TITLE_FORMAT, "계좌목록");
         for (int i = 0; i < count; i++) {
             System.out.println(accounts[i]);
         }
     }
 
-    public static void deposit() {
+    // 3. 예금 기능
+    private static void deposit() {
         try {
             System.out.printf(TITLE_FORMAT, "예금");
             System.out.print("계좌번호: ");
-            String target = sc.nextLine();
+            String accountNo = SC.nextLine();
             System.out.print("예금액: ");
-            int money = Integer.parseInt(sc.nextLine());
 
+            // 금액은 항상 0 이상의 양의 정수
+            int money = Integer.parseUnsignedInt(SC.nextLine());
             for (int i = 0; i < count; i++) {
-                String account = accounts[i].getAccountNumber();
-                if (account.equals(target)) {
-                    accounts[i].deposit(money);
+                String account = accounts[i].getAccountNo();
+
+                // 찾는 계좌가 존재하면 예금
+                if (account.equals(accountNo)) {
+                    int deposit = accounts[i].getBalance() + money;
+                    accounts[i].setBalance(deposit);
                     return;
                 }
             }
             System.out.println("결과: 입금할 계좌가 존재하지 않습니다.");
         } catch (NumberFormatException e) {
             System.out.println(e.getMessage());
-            deposit();
+            deposit();  // 예외 발생 시 처음부터 다시 진행
         }
     }
 
-    public static void withdraw() {
+    // 4. 출금
+    private static void withdraw() {
         try {
             System.out.printf(TITLE_FORMAT, "출금");
             System.out.print("계좌번호: ");
-            String target = sc.nextLine();
+            String accountNo = SC.nextLine();
             System.out.print("출금액: ");
-            int money = Integer.parseInt(sc.nextLine());
+            int money = Integer.parseUnsignedInt(SC.nextLine());
             if (money < 0) {
                 throw new NumberFormatException("출금액은 음수가 될 수 없습니다.");
             }
 
             for (int i = 0; i < count; i++) {
-                String account = accounts[i].getAccountNumber();
-                if (account.equals(target)) {
-                    accounts[i].withdraw(money);
+                String account = accounts[i].getAccountNo();
+
+                // 찾는 계좌가 존재하면 출금
+                if (account.equals(accountNo)) {
+                    int withdraw = accounts[i].getBalance()-money;
+                    accounts[i].setBalance(withdraw);
                     System.out.println("결과: 출금이 성공되었습니다.");
                     return;
                 }
@@ -131,12 +133,14 @@ public class BankApplication {
             System.out.println("결과: 출금할 계좌가 존재하지 않습니다.");
         } catch (NumberFormatException e) {
             System.out.println(e.getMessage());
-            withdraw();
+            withdraw(); // 예외 발생 시 처음부터 다시 진행
         }
     }
 
-    public static void exitMenu() {
+    // 5. 프로그램 종료 기능
+    private static void exitApp() {
         System.out.println("프로그램 종료");
         isRunning = false;
+        SC.close();
     }
 }
