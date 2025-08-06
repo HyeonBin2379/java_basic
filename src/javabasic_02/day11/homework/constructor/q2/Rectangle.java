@@ -1,4 +1,4 @@
-package javabasic_02.day11.constructor.homework.q2;
+package javabasic_02.day11.homework.constructor.q2;
 
 public class Rectangle {
     

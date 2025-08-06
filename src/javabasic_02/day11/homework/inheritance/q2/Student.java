@@ -1,4 +1,4 @@
-package javabasic_02.day11.homework.inheritance;
+package javabasic_02.day11.homework.inheritance.q2;
 
 public class Student {
 
@@ -28,11 +28,5 @@ public class Student {
 
 	public void print() {
 		System.out.printf("%s 씨의 과정명은 %s 이고 교육비는 %,d 이며 환급금은 %.2f 입니다.\n", name, subject, fee, returnFee);
-	}
-
-	public static void main(String args[]){
-		Student stu = new Student("장동건", "jspprogram", 500000);
-		stu.calcReturnFee();
-		stu.print();
 	}
 }  

@@ -1,4 +1,4 @@
-package javabasic_02.day11.homework.inheritance;
+package javabasic_02.day11.homework.inheritance.q1;
 
 public class Drink {
 
