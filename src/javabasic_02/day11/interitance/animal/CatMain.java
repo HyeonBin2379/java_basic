@@ -6,5 +6,10 @@ public class CatMain {
         Cat obj = new Cat();
         obj.meow();
         obj.eat();
+
+        Kitten objKitten = new Kitten();
+        objKitten.meow2();
+        objKitten.meow();
+        objKitten.eat();
     }
 }
