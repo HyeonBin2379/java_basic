@@ -27,6 +27,6 @@ public class Student {
 	}
 
 	public void print() {
-		System.out.printf("%s 씨의 과정명은 %s 이고 교육비는 %,d 이며 환급금은 %.2f 입니다.\n", name, subject, fee, returnFee);
+		System.out.printf("%s 씨의 과정명은 %s 이고 교육비는 %,d 이며 환급금은 %,.0f 입니다.\n", name, subject, fee, returnFee);
 	}
 }  
