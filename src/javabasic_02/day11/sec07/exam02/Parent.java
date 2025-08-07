@@ -5,7 +5,6 @@ public class Parent {
     public String name = "신세계";
 	//메소드 선언
     public void method1() {
-        System.out.println(this.name);
         System.out.println("나는 부모의 method1()");
     }
 
