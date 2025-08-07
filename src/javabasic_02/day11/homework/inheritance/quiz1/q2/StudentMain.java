@@ -1,4 +1,4 @@
-package javabasic_02.day11.homework.inheritance.q2;
+package javabasic_02.day11.homework.inheritance.quiz1.q2;
 
 public class StudentMain {
 

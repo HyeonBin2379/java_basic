@@ -1,4 +1,4 @@
-package javabasic_02.day11.homework.inheritance.q1;
+package javabasic_02.day11.homework.inheritance.quiz1.q1;
 
 public class Alcohol extends Drink{
 
