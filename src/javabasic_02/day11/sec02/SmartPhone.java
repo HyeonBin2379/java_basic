@@ -8,11 +8,11 @@ public class SmartPhone extends Phone {
 	// 파라미터가 존재하는 생성자로 오버로딩 시 컴파일러가 기본 생성자를 생성해주지 않으므로,
 	// 기본 생성자는 별도로 만들어야 함.
 	public SmartPhone() {
-	}
+        super();
+    }
 
 	public SmartPhone(String model, String color) {
-		this.model = model;
-		this.color = color;
+		super(model, color);
 	}
 
 	//메소드 선언
