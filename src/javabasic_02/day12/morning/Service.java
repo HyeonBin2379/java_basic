@@ -1,6 +1,7 @@
-package javabasic_02.day12;
+package javabasic_02.day12.morning;
 
 public interface Service {
+
     // 디폴트 메서드
     default void defaultMethod1() {
         System.out.println("default1()");
