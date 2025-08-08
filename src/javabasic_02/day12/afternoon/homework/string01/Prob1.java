@@ -17,12 +17,7 @@ public class Prob1 {
 		if (str.length() > size) {
 			return str;
 		}
-
-		StringBuilder sb = new StringBuilder(str);
-		while (sb.length() < size) {
-			sb.insert(0, padChar);
-		}
-		return sb.toString();
+		return String.valueOf(padChar).repeat(size-str.length()) + str;
 	}
 	
 }

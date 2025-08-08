@@ -21,7 +21,15 @@ public class Prob1 {
 	
 	public static String myReplace(String str, char oldChar, char newChar){
 		// 이 부분을 구현하시오.
-		return str.replace(oldChar, newChar);
+		StringBuilder sb = new StringBuilder();
+		for (char ch : str.toCharArray()) {
+			if (ch == oldChar) {
+				sb.append(newChar);
+			} else {
+				sb.append(ch);
+			}
+		}
+		return sb.toString();
 	}
 	
 }
