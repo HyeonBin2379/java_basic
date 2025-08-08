@@ -8,16 +8,14 @@ public class CarFactory extends Factory implements IWorkingTogether {
 
     @Override
     public int makeProducts(char skill) {
+        int products;
         switch (skill) {
-            case 'A':
-                return 3*getWorkingTime();
-            case 'B':
-                return 2*getWorkingTime();
-            case 'C':
-                return getWorkingTime();
-            default:
-                return 0;
+            case 'A' -> products = 3 * getWorkingTime();
+            case 'B' -> products = 2 * getWorkingTime();
+            case 'C' -> products = getWorkingTime();
+            default -> products = 0;
         }
+        return products;
     }
 
     @Override

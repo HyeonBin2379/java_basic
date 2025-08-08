@@ -1,0 +1,65 @@
+[클래스 개념 문제 답안]
+1.
+답: 1
+
+2.
+답: 4
+
+3.
+답: 1
+
+4.
+답: 4
+
+5.
+답: 2
+
+7. 
+```
+Parent(대한민국) call
+Parent() call
+Child(홍길동) call
+Child() call
+```
+
+8.
+```
+스노우 타이어가 굴러갑니다.
+일반 타이어가 굴러갑니다.
+```
+
+9.
+답: 2
+
+10
+답: Computer 클래스에서 추상 메서드 work()가 오버라이딩되지 않았음.
+
+11.
+답: super
+
+12.
+답: a instanceof C c
+
+[인터페이스 개념문제 답안]
+1.
+답: 1
+
+2.
+답: 3
+
+3.
+답: 4
+
+4.
+답: 1, 2, 3, 4
+
+5.
+```
+@Override
+public void powerOn() {
+    System.out.println("TV를 켰습니다.");
+}
+```
+
+8.
+답: a instanceof C c
