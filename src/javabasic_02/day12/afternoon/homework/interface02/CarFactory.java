@@ -18,8 +18,14 @@ public class CarFactory extends Factory implements IWorkingTogether {
         return products;
     }
 
+    // 파트너 공장과 협력 시 추가 생산량
     @Override
     public int workTogether(IWorkingTogether partner) {
-        return ((Factory) partner).makeProducts('B');
+        if (partner instanceof CarFactory carFactory) {
+            return carFactory.makeProducts('B');
+        } else if (partner instanceof TVFactory tvFactory) {
+            return tvFactory.makeProducts('B');
+        }
+        return 0;
     }
 }

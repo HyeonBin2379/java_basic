@@ -15,6 +15,7 @@ public class AnimalTest {
 			dog.run(1);
 			chicken.run(1);
 			cheatableChicken.run(1);
+
 			System.out.println(i + "시간 후");
 			System.out.printf("개의 이동거리=%.1f\n", dog.getDistance());
 			System.out.printf("닭의 이동거리=%.1f\n", chicken.getDistance());
