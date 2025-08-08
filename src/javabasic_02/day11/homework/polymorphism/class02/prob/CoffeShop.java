@@ -25,9 +25,9 @@ public class CoffeShop {
 	//결과와 같이 총 판매금액을 구할 수 있도록 getTotalPrice메소드를 작성하세요.
 	private static int getTotalPrice(Beverage[] beverage) {
 		int totalPrice = 0;
-		for (int i = 0; i < beverage.length; i++) {
-			totalPrice += beverage[i].getPrice();
-		}
+        for (Beverage value : beverage) {
+            totalPrice += value.getPrice();
+        }
 		return totalPrice;
 	}
 }
