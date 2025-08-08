@@ -7,19 +7,20 @@ public class AnimalTest {
 		Animal chicken = new Chicken(3);
 		Chicken cheatableChicken = new Chicken(5);
 
-		if (cheatableChicken instanceof Cheatable) {
-			cheatableChicken.fly();
+		Animal[] animals = {dog, chicken, cheatableChicken};
+		if (animals[2] instanceof Cheatable) {
+			((Cheatable) animals[2]).fly();
 		}
 
         for (int i = 1; i <= 3; i++) {
-			dog.run(1);
-			chicken.run(1);
-			cheatableChicken.run(1);
-
 			System.out.println(i + "시간 후");
-			System.out.printf("개의 이동거리=%.1f\n", dog.getDistance());
-			System.out.printf("닭의 이동거리=%.1f\n", chicken.getDistance());
-			System.out.printf("날으는 닭의 이동거리=%.1f\n", cheatableChicken.getDistance());
+            for (Animal animal : animals) {
+                animal.run(1);
+            }
+
+			System.out.printf("개의 이동거리=%.1f\n", animals[0].getDistance());
+			System.out.printf("닭의 이동거리=%.1f\n", animals[1].getDistance());
+			System.out.printf("날으는 닭의 이동거리=%.1f\n", animals[2].getDistance());
 		}
 	}
 }
