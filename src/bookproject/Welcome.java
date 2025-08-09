@@ -79,37 +79,38 @@ public class Welcome {
     // 고객 정보 확인하기
     public static void menuGuestInfo(String name, String phoneNumber) {
         // 이름 길이에 관계없이 정렬 형식을 유지하도록 출력
-        System.out.printf("현재 고객 정보 :\n이름 %-5s\t연락처 %s\n", name, phoneNumber);
+        System.out.println("현재 고객 정보 :");
+        System.out.printf("이름 %-5s\t연락처 %s\n", name, phoneNumber);
     }
 
     // 장바구니 상품 목록 보기
     public static void menuCartItemList() {
-        System.out.println("2. 장바구니 상품 목록 :");
+        System.out.println("2. 장바구니 상품 목록 보기");
     }
 
     // 장바구니 비우기
     public static void menuCartClear() {
-
+        System.out.println("3. 장바구니 비우기");
     }
 
     // 바구니에 항목 추가하기
     public static void menuCartAddItem() {
-
+        System.out.println("4. 장바구니에 항목 추가하기");
     }
 
     // 장바구니 항목 수량 줄이기
     public static void menuCartRemoveItemCount() {
-
+        System.out.println("5. 장바구니의 항목 수량 줄이기");
     }
 
     // 장바구니 항목 삭제하기
     public static void menuCartRemoveItem() {
-
+        System.out.println("6. 장바구니의 항목 삭제하기");
     }
 
     // 영수증 표시하기
     public static void menuCartBill() {
-
+        System.out.println("7. 영수증 표기하기");
     }
 
     // 메뉴 종료
