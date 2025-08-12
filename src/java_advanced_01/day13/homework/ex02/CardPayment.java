@@ -30,7 +30,6 @@ public class CardPayment extends Payment {
                 상품명 : %s
                 상품가격 : %d
                 신용카드번호 : %s
-                할부개월 : %d
-                """, shopName, productName, productPrice, cardNumber, monthlyInstallment);
+                할부개월 : %d""", shopName, productName, productPrice, cardNumber, monthlyInstallment);
     }
 }

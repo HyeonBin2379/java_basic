@@ -24,7 +24,6 @@ public class CashPayment extends Payment {
                 상점명 : %s
                 상품명 : %s
                 상품가격 : %d
-                현금영수증번호 : %s
-                """, shopName, productName, productPrice, cashReceiptNumber);
+                현금영수증번호 : %s""", shopName, productName, productPrice, cashReceiptNumber);
     }
 }
