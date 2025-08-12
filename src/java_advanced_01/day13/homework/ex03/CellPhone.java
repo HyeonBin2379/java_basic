@@ -38,4 +38,12 @@ public class CellPhone {
     void printBattery() {
         System.out.printf("남은 배터리 양: %.1f\n", battery);
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof CellPhone otherPhone) {
+            return this.model.equals(otherPhone.model);
+        }
+        throw new ClassCastException();
+    }
 }
