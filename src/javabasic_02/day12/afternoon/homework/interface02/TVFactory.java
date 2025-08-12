@@ -20,11 +20,6 @@ public class TVFactory extends Factory implements IWorkingTogether {
 
     @Override
     public int workTogether(IWorkingTogether partner) {
-        if (partner instanceof CarFactory carFactory) {
-            return carFactory.makeProducts('C');
-        } else if (partner instanceof TVFactory tvFactory) {
-            return tvFactory.makeProducts('C');
-        }
-        return 0;
+        return ((TVFactory) partner).makeProducts('C');
     }
 }

@@ -3,7 +3,7 @@ package javabasic_02.day12.afternoon.homework.interface01;
 public class Chicken extends Animal implements Cheatable{
 
     public Chicken(int speed) {
-        super(speed);
+        this.speed = speed;
     }
 
     @Override
