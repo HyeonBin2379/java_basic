@@ -35,11 +35,11 @@ public class FactoryExample {
 		// TODO
 		System.out.println("1. 하루 생산량 = " + mainFactory.makeProducts(mainFactorySkill));
 
-		Factory parFactory = (Factory) partner;
 		if (mainFactory instanceof CarFactory carFactory) {
-			System.out.printf("2. 파트너 공장 [%s] 협력 시 추가 생산량 = %d\n", parFactory.getFactoryName(), carFactory.workTogether(partner));
+			// partner를 Factory 타입으로 변환하여 파트너 공장의 이름을 반환
+			System.out.printf("2. 파트너 공장 [%s] 협력 시 추가 생산량 = %d\n", ((Factory) partner).getFactoryName(), carFactory.workTogether(partner));
 		} else if (mainFactory instanceof TVFactory tvFactory) {
-			System.out.printf("2. 파트너 공장 [%s] 협력 시 추가 생산량 = %d\n", parFactory.getFactoryName(), tvFactory.workTogether(partner));
+			System.out.printf("2. 파트너 공장 [%s] 협력 시 추가 생산량 = %d\n", ((Factory) partner).getFactoryName(), tvFactory.workTogether(partner));
 		}
 		System.out.println("--------------------------------------------------------------");
 	}
