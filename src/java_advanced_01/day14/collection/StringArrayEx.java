@@ -1,6 +1,6 @@
-package java_advanced_01.day14.homework;
+package java_advanced_01.day14.collection;
 
-public class Quiz01 {
+public class StringArrayEx {
 
     public static void main(String[] args) {
         String dataset[] = {
@@ -36,13 +36,33 @@ public class Quiz01 {
                 "Todoroff, Mr. Lalio"
         };
 
-        int count = 0;
+        Integer count = 0;
         for (String data : dataset) {
-            String[] entry = data.split(", ");
-            if (entry[0].toLowerCase().contains("m")) {
+            if (data.contains("M")) {
                 count++;
             }
         }
         System.out.println(count);
+
+        Integer[][] data_list1 = {{1, 2, 3}, {5, 6, 7}};
+        System.out.println(data_list1[1][2]);
+        System.out.println(data_list1[0][1]);
+        System.out.println(data_list1[0][2]);
+        System.out.println(data_list1[1][0]);
+        System.out.println(data_list1[1][1]);
+
+        Integer[][][] data_list = {
+                {
+                        {1, 2, 3},
+                        {4, 5, 6}
+                },
+                {
+                        {7, 8, 9},
+                        {10, 11, 12}
+                }
+        };
+
+        System.out.println(data_list[0][1][1]);
+        System.out.println(data_list[1][1][2]);
     }
 }
