@@ -13,9 +13,8 @@ public class MyStack<T> {
     public T pop() {
         if (this.isEmpty()) {
             return null;
-        } else {
-            return stack.remove(stack.size()-1);
         }
+        return stack.remove(stack.size()-1);
     }
 
     public boolean isEmpty() {
