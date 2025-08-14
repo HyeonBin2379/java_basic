@@ -62,7 +62,7 @@ public class SingleLinkedListEx<T> {
 
     public void deleteNode(T isData) {
         Node<T> curr = this.head;
-        if (this.head == null) {
+        if (curr == null) {
             return;
         }
 
@@ -81,7 +81,7 @@ public class SingleLinkedListEx<T> {
         if (curr != this.head) {
             prev.next = curr.next;  // 삭제할 대상이 첫번째 노드가 아님
         } else {
-            this.head = curr.next;  // 삭제할 대상이 첫번째 노드
+            this.head = curr.next;  // 삭제할 대상이 첫번째 노드 -> 헤드를 두번째 노드로 변경
         }
     }
 
