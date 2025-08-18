@@ -16,7 +16,7 @@ public class CartItem {
 	public CartItem(Book book) {
 		this.itemBook = book;
 		this.bookID = book.getBookId();
-		this.quantity = 1;	
+		this.quantity = 1;
 		updateTotalPrice();
 	}
 
@@ -57,6 +57,6 @@ public class CartItem {
 	public String toString() {
 		List<String> fields = List.of(bookID, Integer.toString(quantity), Integer.toString(totalPrice));
 
-		return String.join("\t|\t", fields);
+		return String.join("\t|    ", fields);
 	}
 }

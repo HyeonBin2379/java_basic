@@ -39,28 +39,35 @@ public class Cart implements CartInterface {
         mCartItem.clear();
     }
 
-    public void printCart() {
-        System.out.println("장바구니 상품 목록 :");
-        System.out.println("---------------------------------");
-        System.out.println("    도서ID \t|    수량\t|   합계");
-        for (CartItem cartItem : mCartItem) {
-            System.out.println(cartItem);
-        }
-        System.out.println("---------------------------------");
+    public CartItem getCartItem(int index) {
+        return mCartItem.get(index);
     }
 
-    public boolean isCartEmpty() {
-        return mCartItem.isEmpty();
-    }
-
-    public int indexOf(String id) {
+    public int indexOf(String bookID) {
         for (int i = 0; i < mCartItem.size(); i++) {
             CartItem cartItem = mCartItem.get(i);
-            String bookId = cartItem.getBookID();
-            if (bookId.equals(id)) {
+            if (bookID.equals(cartItem.getBookID())) {
                 return i;
             }
         }
         return -1;
+    }
+
+    public void printCart() {
+        String format = """
+                장바구니 상품 목록 :
+                ---------------------------------
+                    도서ID    |    수량    |    합계
+                %s---------------------------------
+                """;
+        StringBuilder sb = new StringBuilder();
+        for (CartItem cartItem : mCartItem) {
+            sb.append("    ").append(cartItem).append("\n");
+        }
+        System.out.printf(format, sb);
+    }
+
+    public boolean isCartEmpty() {
+        return mCartItem.isEmpty();
     }
 }

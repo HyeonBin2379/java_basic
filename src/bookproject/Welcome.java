@@ -47,33 +47,15 @@ public class Welcome {
             }
             // 메뉴 선택
             switch (menuNum) {
-                case 1:
-                    menuGuestInfo(userName, userMobile);
-                    break;
-                case 2:
-                    menuCartItemList();
-                    break;
-                case 3:
-                    menuCartClear();
-                    break;
-                case 4:
-                    menuCartAddItem(mBookList);
-                    break;
-                case 5:
-                    menuCartRemoveItemCount();
-                    break;
-                case 6:
-                    menuCartRemoveItem();
-                    break;
-                case 7:
-                    menuCartBill();
-                    break;
-                case 8:
-                    menuExit();
-                    break;
-                case 9:
-                    menuAdminLogin();
-                    break;
+                case 1 -> menuGuestInfo(userName, userMobile);
+                case 2 -> menuCartItemList();
+                case 3 -> menuCartClear();
+                case 4 -> menuCartAddItem(mBookList);
+                case 5 -> menuCartRemoveItemCount();
+                case 6 -> menuCartRemoveItem();
+                case 7 -> menuCartBill();
+                case 8 -> menuExit();
+                case 9 -> menuAdminLogin();
             }
         }
     }
@@ -121,42 +103,30 @@ public class Welcome {
             System.out.println(book);
         }
 
-        boolean quit = false;
-        while (!quit) {
+        while (true) {
             // 구매할 도서 ID 입력
             System.out.print("장바구니에 추가할 도서의 ID를 입력하세요 :");
             String str = input.next();
             input.nextLine();
 
             // 구매할 도서 ID에 대응되는 도서를 도서목록에서 검색
-            int index = findIndexByNumId(bookList, str);
-            Book book = bookList.get(index);
+            int index = findBookByNumId(bookList, str);
+            Book book = (index != -1) ? bookList.get(index) : null;
 
             if (book != null) { // 구매하려는 도서가 도서목록에 존재
                 System.out.println("장바구니에 추가하겠습니까? Y | N ");
                 str = input.nextLine();
 
-                // 찾은 도서를 구매대상으로 선택
-                if (str.equalsIgnoreCase("Y")) {
+                // 선택한 도서가 장바구니에 있다면, 찾은 도서를 구매대상으로 선택
+                if (str.equalsIgnoreCase("Y")
+                        && !isCartInBook(book.getBookId())) {
+                    mCart.insertBook(book);
                     System.out.println(book.getBookId() + " 도서가 장바구니에 추가되었습니다.");
-                    // 선택한 도서가 장바구니에 있는지 확인
-                    if (!isCartInBook(book.getBookId())) {
-                        mCart.insertBook(book);
-                    }
                 }
-                quit = true;
-                continue;
+                return;
             }     // 찾는 도서가 도서목록에 없음
             System.out.println("다시 입력해 주세요");
         }
-    }
-    private static int findIndexByNumId(List<Book> bookList, String bookId) {
-        for (Book book : bookList) {
-            if (bookId.equals(book.getBookId())) {
-                return bookList.indexOf(book);
-            }
-        }
-        return -1;
     }
 
     // 장바구니 항목 수량 줄이기
@@ -172,21 +142,21 @@ public class Welcome {
         }
         menuCartItemList();
 
-        boolean quit = false;
-        while (!quit) {
+        while (true) {
             System.out.print("장바구니에서 삭제할 도서의 ID를 입력하세요 :");
             String str = input.next();
-            int index = mCart.indexOf(str);
 
-            if (index != -1) {
+            if (mCart.isCartInBook(str)) {
+                int index = mCart.indexOf(str);
                 System.out.println("장바구니의 항목을 삭제하겠습니까? Y | N");
                 str = input.next();
+
                 if (str.equalsIgnoreCase("Y")) {
-                    System.out.println(str + " 장바구니에서 도서가 삭제되었습니다.");
+                    CartItem cartItem = mCart.getCartItem(index);
                     mCart.removeCart(index);
+                    System.out.println(cartItem.getBookID() + " 장바구니에서 도서가 삭제되었습니다.");
                 }
-                quit = true;
-                continue;
+                return;
             }
             System.out.println("다시 입력해 주세요.");
         }
@@ -205,23 +175,24 @@ public class Welcome {
 
     // 도서 목록 생성
     public static void BookList(List<Book> bookList) {
-        bookList.add(new Book("ISBN1234", "쉽게 배우는 JSP 웹 프로그래밍", 27000));
-        bookList.get(0).setAuthor("송미영");
-        bookList.get(0).setDescription("단계별로 쇼핑몰을 구현하며 배우는 JSP 웹 프로그래밍");
-        bookList.get(0).setCategory("IT전문서");
-        bookList.get(0).setReleaseDate("2018/10/08");
+        String[] tuples = {
+                "ISBN1234 | 쉽게 배우는 JSP 웹 프로그래밍 | 27000 | 송미영 | 단계별로 쇼핑몰을 구현하며 배우는 JSP 웹 프로그래밍 | IT전문서 | 2018/10/08",
+                "ISBN1235 | 안드로이드 프로그래밍 | 33000 | 우재남 | 실습 단계별 명쾌한 멘토링! | IT전문서 | 2022/01/22",
+                "ISBN1236 | 안드로이드 프로그래밍 | 33000 | 고광일 | 컴퓨팅 사고력을 키우는 블록 코딩 | 컴퓨터입문 | 2019/06/10"
+        };
 
-        bookList.add(new Book("ISBN1235", "안드로이드 프로그래밍", 33000));
-        bookList.get(1).setAuthor("우재남");
-        bookList.get(1).setDescription("실습 단계별 명쾌한 멘토링!");
-        bookList.get(1).setCategory("IT전문서");
-        bookList.get(1).setReleaseDate("2022/01/22");
-
-        bookList.add(new Book("ISBN1236", "안드로이드 프로그래밍", 33000));
-        bookList.get(2).setAuthor("고광일");
-        bookList.get(2).setDescription("컴퓨팅 사고력을 키우는 블록 코딩");
-        bookList.get(2).setCategory("컴퓨터입문");
-        bookList.get(2).setReleaseDate("2019/06/10");
+        for (int i = 0; i < tuples.length; i++) {
+            String[] attributes = tuples[i].split(" \\| ");
+            int index = findBookByNumId(bookList, attributes[0]);
+            if (index != -1) {
+                continue;
+            }
+            bookList.add(new Book(attributes[0], attributes[1], Integer.parseInt(attributes[2])));
+            bookList.get(i).setAuthor(attributes[3]);
+            bookList.get(i).setDescription(attributes[4]);
+            bookList.get(i).setCategory(attributes[5]);
+            bookList.get(i).setReleaseDate(attributes[6]);
+        }
     }
 
     public static boolean isCartInBook(String bookId) {
@@ -247,5 +218,14 @@ public class Welcome {
             return;
         }
         System.out.println("관리자 정보가 일치하지 않습니다.");
+    }
+
+    private static int findBookByNumId(List<Book> bookList, String bookId) {
+        for (Book book : bookList) {
+            if (bookId.equals(book.getBookId())) {
+                return bookList.indexOf(book);
+            }
+        }
+        return -1;
     }
 }
