@@ -16,36 +16,36 @@ public class NodeMgmt {
 
     public boolean insert(int data) {
         // 1. 트리의 노드가 0개일 때 -> 추가해야 할 노드가 루트 노드
+        System.out.println("data = " + data);
         if (this.head == null) {
             this.head = new Node(data);
+            System.out.println("headNode = " + data);
             return true;
         }
 
+        // 2. 트리에 저장된 노드가 존재
         Node findNode = this.head;
         while (true) {
-            // 2. 트리에 저장된 노드가 존재
-            // 2-1 현재 노드와 동일한 데이터
-            if (findNode.value == data) {
-                return false;
+            if (findNode.left == null) {
+                System.out.println("parentNode = " + findNode.value);
+                findNode.left = new Node(data);
+                break;
+            } else if (findNode.right == null) {
+                System.out.println("parentNode = " + findNode.value);
+                findNode.right = new Node(data);
+                break;
             }
 
-            // 2-2 현재 노드의 왼쪽에 새로운 노드를 추가
-            if (findNode.value < data) {
-                if (findNode.left == null) {
-                    findNode.left = new Node(data);
-                    break;
-                }
+            // 현재 노드에 새로운 노드를 추가
+            if (data < findNode.value) {
                 findNode = findNode.left;
-            }
-            // 2-3 현재 노드의 오른쪽에 새로운 노드를 추가
-            else {
-                if (findNode.right == null) {
-                    findNode.right = new Node(data);
-                    break;
-                }
+            } else if (data > findNode.value) {
                 findNode = findNode.right;
+            } else {
+                return false;
             }
         }
+        System.out.println("newNode = " + data);
         return true;
     }
 
