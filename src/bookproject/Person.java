@@ -2,15 +2,14 @@ package bookproject;
 
 public class Person {
 	private String name;
-	private int phone;
+	private String phone;
 	private String address;
 
-	public Person(String name, int phone) {
-		this.name = name;
-		this.phone = phone;
+	public Person(String name, String phone) {
+		this(name, phone, null);
 	}
 
-	public Person(String name, int phone, String address) {
+	public Person(String name, String phone, String address) {
 		this.name = name;
 		this.phone = phone;
 		this.address = address;
@@ -24,11 +23,11 @@ public class Person {
 		this.name = name;
 	}
 
-	public int getPhone() {
+	public String getPhone() {
 		return phone;
 	}
 
-	public void setPhone(int phone) {
+	public void setPhone(String phone) {
 		this.phone = phone;
 	}
 

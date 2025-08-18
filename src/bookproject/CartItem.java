@@ -1,8 +1,10 @@
 package bookproject;
 
+import java.util.List;
+
 public class CartItem {
 
-	private String[] itemBook = new String[7];
+	private Book itemBook;
 	private String bookID;
 	private int quantity;
 	private int  totalPrice;
@@ -11,18 +13,18 @@ public class CartItem {
 		// TODO Auto-generated constructor stub
 	}
 	
-	public CartItem(String[] book) {		
+	public CartItem(Book book) {
 		this.itemBook = book;
-		this.bookID = book[0];
+		this.bookID = book.getBookId();
 		this.quantity = 1;	
 		updateTotalPrice();
 	}
 
-	public String[] getItemBook() {
+	public Book getItemBook() {
 		return itemBook;
 	}
 
-	public void setItemBook(String[] itemBook) {
+	public void setItemBook(Book itemBook) {
 		this.itemBook = itemBook;
 	}
 	public String getBookID() {
@@ -48,6 +50,13 @@ public class CartItem {
 	}
 
 	public void updateTotalPrice() {
-		totalPrice = Integer.parseInt(this.itemBook[2]) * this.quantity;
-	}	
+		totalPrice = itemBook.getUnitPrice() * this.quantity;
+	}
+
+	@Override
+	public String toString() {
+		List<String> fields = List.of(bookID, Integer.toString(quantity), Integer.toString(totalPrice));
+
+		return String.join("\t|\t", fields);
+	}
 }

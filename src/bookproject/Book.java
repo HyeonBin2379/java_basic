@@ -1,35 +1,24 @@
 package bookproject;
 
-public class Book {
+import java.util.List;
 
-    private String isbn;
-    private String title;
-    private int price;
+public class Book extends Item{
+
     private String author;
     private String description;
     private String category;
-    private String publishDate;
+    private String releaseDate;
 
-    public Book(String[] data) {
-        this.isbn = data[0];
-        this.title = data[1];
-        this.price = Integer.parseInt(data[2]);
+    public Book(String bookId, String name, int unitPrice) {
+        super(bookId, name, unitPrice);
+    }
+
+    public Book(String[] data) { // 빌더패턴 적용 필요
+        super(data[0], data[1], Integer.parseInt(data[2]));
         this.author = data[3];
         this.description = data[4];
         this.category = data[5];
-        this.publishDate = data[6];
-    }
-
-    public String getIsbn() {
-        return isbn;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public int getPrice() {
-        return price;
+        this.releaseDate = data[6];
     }
 
     public String getAuthor() {
@@ -44,7 +33,32 @@ public class Book {
         return category;
     }
 
-    public String getPublishDate() {
-        return publishDate;
+    public String getReleaseDate() {
+        return releaseDate;
+    }
+
+    public void setAuthor(String author) {
+        this.author = author;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
+    }
+
+    public void setReleaseDate(String releaseDate) {
+        this.releaseDate = releaseDate;
+    }
+
+    @Override
+    public String toString() {
+        List<String> fields = List.of(
+                this.getBookId(), this.getName(), Integer.toString(this.getUnitPrice()),
+                author, description, category, releaseDate
+        );
+        return String.join(" | ", fields);
     }
 }
