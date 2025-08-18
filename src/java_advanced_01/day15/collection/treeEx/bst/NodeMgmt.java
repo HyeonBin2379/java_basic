@@ -16,36 +16,39 @@ public class NodeMgmt {
 
     public boolean insert(int data) {
         // 1. 트리의 노드가 0개일 때 -> 추가해야 할 노드가 루트 노드
-        System.out.println("data = " + data);
+        System.out.println("newData = " + data);
         if (this.head == null) {
             this.head = new Node(data);
             System.out.println("headNode = " + data);
             return true;
         }
 
-        // 2. 트리에 저장된 노드가 존재
-        Node findNode = this.head;
+        // 2. 트리에 노드가 1개라도 존재
+        Node curr = this.head;
         while (true) {
-            if (findNode.left == null) {
-                System.out.println("parentNode = " + findNode.value);
-                findNode.left = new Node(data);
-                break;
-            } else if (findNode.right == null) {
-                System.out.println("parentNode = " + findNode.value);
-                findNode.right = new Node(data);
+            System.out.println("curr = " + curr.value);
+            if (curr.left == null || curr.right == null) {
                 break;
             }
 
-            // 현재 노드에 새로운 노드를 추가
-            if (data < findNode.value) {
-                findNode = findNode.left;
-            } else if (data > findNode.value) {
-                findNode = findNode.right;
+            if (data < curr.value) {
+                curr = curr.left;
+                System.out.println("curr = " + curr.value);
+            } else if (data > curr.value) {
+                curr = curr.right;
+                System.out.println("curr = " + curr.value);
             } else {
                 return false;
             }
         }
-        System.out.println("newNode = " + data);
+
+        if (curr.left == null) {
+            curr.left = new Node(data);
+            System.out.println("curr.left = " + curr.left.value);
+        } else {
+            curr.right = new Node(data);
+            System.out.println("curr.right = " + curr.right.value);
+        }
         return true;
     }
 
