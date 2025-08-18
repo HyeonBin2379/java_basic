@@ -14,6 +14,8 @@ public class HashMapEx {
         // Entry 객체를 Map에 저장 - insert/create/saved
         map.put("A", 1);
         map.put("B", 1);
+        map.put("B", 2);
+        map.put("B", 3);
         map.put("C", 1);
         map.put("D", 1);
 
@@ -61,7 +63,7 @@ public class HashMapEx {
 
 
         // 키로 엔트리를 삭제
-        map.remove("B");
+        System.out.println(map.remove("B"));
         System.out.println("삭제 후 Map의 크기: " + map.size());
         System.out.println();
     }
