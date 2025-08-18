@@ -30,7 +30,8 @@ public class Cart implements CartInterface {
 
     @Override
     public void removeCart(int numId) {
-        mCartItem.remove(numId);
+        CartItem cartItem = mCartItem.get(numId);
+        mCartItem.remove(cartItem);
     }
 
     @Override

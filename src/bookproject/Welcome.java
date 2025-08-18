@@ -174,13 +174,13 @@ public class Welcome {
 
         boolean quit = false;
         while (!quit) {
-            System.out.println("장바구니에서 삭제할 도서의 ID를 입력하세요 :");
+            System.out.print("장바구니에서 삭제할 도서의 ID를 입력하세요 :");
             String str = input.next();
             int index = mCart.indexOf(str);
 
             if (index != -1) {
                 System.out.println("장바구니의 항목을 삭제하겠습니까? Y | N");
-                str = input.nextLine();
+                str = input.next();
                 if (str.equalsIgnoreCase("Y")) {
                     System.out.println(str + " 장바구니에서 도서가 삭제되었습니다.");
                     mCart.removeCart(index);
