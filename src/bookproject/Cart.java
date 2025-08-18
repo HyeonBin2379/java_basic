@@ -31,6 +31,9 @@ public class Cart implements CartInterface {
     @Override
     public void removeCart(int numId) {
         CartItem cartItem = mCartItem.get(numId);
+        removeCart(cartItem);
+    }
+    public void removeCart(CartItem cartItem) {
         mCartItem.remove(cartItem);
     }
 
@@ -41,6 +44,9 @@ public class Cart implements CartInterface {
 
     public CartItem getCartItem(int index) {
         return mCartItem.get(index);
+    }
+    public CartItem getCartItem(String bookID) {
+        return mCartItem.get(indexOf(bookID));
     }
 
     public int indexOf(String bookID) {
@@ -54,17 +60,14 @@ public class Cart implements CartInterface {
     }
 
     public void printCart() {
-        String format = """
-                장바구니 상품 목록 :
-                ---------------------------------
-                    도서ID    |    수량    |    합계
-                %s---------------------------------
-                """;
+        System.out.printf(FORMAT, rendering());
+    }
+    private String rendering() {
         StringBuilder sb = new StringBuilder();
         for (CartItem cartItem : mCartItem) {
             sb.append("    ").append(cartItem).append("\n");
         }
-        System.out.printf(format, sb);
+        return sb.toString();
     }
 
     public boolean isCartEmpty() {

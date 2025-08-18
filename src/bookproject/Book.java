@@ -1,6 +1,5 @@
 package bookproject;
 
-import java.util.Arrays;
 import java.util.List;
 
 public class Book extends Item{

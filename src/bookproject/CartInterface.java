@@ -4,6 +4,13 @@ import java.util.List;
 
 public interface CartInterface {
 
+    String FORMAT = """
+                장바구니 상품 목록 :
+                ---------------------------------
+                    도서ID    |    수량    |    합계
+                %s---------------------------------
+                """;
+
     void printBookList(List<Book> p);
     boolean isCartInBook(String id);
     void insertBook(Book book);

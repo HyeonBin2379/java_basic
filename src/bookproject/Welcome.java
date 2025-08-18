@@ -34,7 +34,7 @@ public class Welcome {
         String userMobile = input.nextLine();
 
         mUser = new User(userName, userMobile);
-        // 반복문에 라벨 부여
+
         while (isRunning) {
             // 메뉴 출력 후 메뉴 번호 입력
             menuIntroduction();
@@ -103,29 +103,32 @@ public class Welcome {
             System.out.println(book);
         }
 
-        while (true) {
+        boolean quit = false;
+        while (!quit) {
             // 구매할 도서 ID 입력
             System.out.print("장바구니에 추가할 도서의 ID를 입력하세요 :");
             String str = input.next();
             input.nextLine();
 
             // 구매할 도서 ID에 대응되는 도서를 도서목록에서 검색
-            int index = findBookByNumId(bookList, str);
-            Book book = (index != -1) ? bookList.get(index) : null;
+            Book book = findBookByNumId(bookList, str);
 
-            if (book != null) { // 구매하려는 도서가 도서목록에 존재
-                System.out.println("장바구니에 추가하겠습니까? Y | N ");
-                str = input.nextLine();
+            // 구매할 도서가 도서목록에 없음
+            if (book == null) {
+                System.out.println("다시 입력해 주세요");
+                continue;
+            }
+            // 구매하려는 도서가 도서목록에 존재
+            System.out.println("장바구니에 추가하겠습니까? Y | N ");
+            str = input.nextLine();
 
-                // 선택한 도서가 장바구니에 있다면, 찾은 도서를 구매대상으로 선택
-                if (str.equalsIgnoreCase("Y")
-                        && !isCartInBook(book.getBookId())) {
-                    mCart.insertBook(book);
-                    System.out.println(book.getBookId() + " 도서가 장바구니에 추가되었습니다.");
-                }
-                return;
-            }     // 찾는 도서가 도서목록에 없음
-            System.out.println("다시 입력해 주세요");
+            // 선택한 도서가 장바구니에 있다면, 찾은 도서를 구매대상으로 선택
+            if (str.equalsIgnoreCase("Y")
+                    && !isCartInBook(book.getBookId())) {
+                mCart.insertBook(book);
+                System.out.println(book.getBookId() + " 도서가 장바구니에 추가되었습니다.");
+                quit = true;
+            }
         }
     }
 
@@ -147,13 +150,13 @@ public class Welcome {
             String str = input.next();
 
             if (mCart.isCartInBook(str)) {
-                int index = mCart.indexOf(str);
+                String bookId = str;
                 System.out.println("장바구니의 항목을 삭제하겠습니까? Y | N");
                 str = input.next();
 
                 if (str.equalsIgnoreCase("Y")) {
-                    CartItem cartItem = mCart.getCartItem(index);
-                    mCart.removeCart(index);
+                    CartItem cartItem = mCart.getCartItem(bookId);
+                    mCart.removeCart(cartItem);
                     System.out.println(cartItem.getBookID() + " 장바구니에서 도서가 삭제되었습니다.");
                 }
                 return;
@@ -183,8 +186,9 @@ public class Welcome {
 
         for (int i = 0; i < tuples.length; i++) {
             String[] attributes = tuples[i].split(" \\| ");
-            int index = findBookByNumId(bookList, attributes[0]);
-            if (index != -1) {
+            Book book = findBookByNumId(bookList, attributes[0]);
+
+            if (book != null) {
                 continue;
             }
             bookList.add(new Book(attributes[0], attributes[1], Integer.parseInt(attributes[2])));
@@ -220,12 +224,12 @@ public class Welcome {
         System.out.println("관리자 정보가 일치하지 않습니다.");
     }
 
-    private static int findBookByNumId(List<Book> bookList, String bookId) {
+    private static Book findBookByNumId(List<Book> bookList, String bookId) {
         for (Book book : bookList) {
             if (bookId.equals(book.getBookId())) {
-                return bookList.indexOf(book);
+                return book;
             }
         }
-        return -1;
+        return null;
     }
 }
