@@ -1,0 +1,19 @@
+package java_advanced_01.day17.anonymousclass.class05;
+
+public class Calculator {
+
+    // 계산에 필요한 두 수를 저장하는 필드
+    private final int number1;
+    private final int number2;
+
+    public Calculator(int number1, int number2) {
+        this.number1 = number1;
+        this.number2 = number2;
+    }
+
+    // 인터페이스 타입을 매개변수로 받는 메서드
+    public int calculate(Operate op) {
+        // 매개변수로 받은 메서드를 실행해서 결과를 리턴
+        return op.operate(this.number1, this.number2);
+    }
+}
