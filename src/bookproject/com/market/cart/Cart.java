@@ -1,7 +1,10 @@
-package bookproject;
+package bookproject.com.market.cart;
+
+import bookproject.com.market.bookitem.Book;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.IntStream;
 
 public class Cart implements CartInterface {
 
@@ -13,9 +16,7 @@ public class Cart implements CartInterface {
 
     @Override
     public void printBookList(List<Book> bookList) {
-        for (Book book : bookList) {
-            System.out.println(book);
-        }
+        bookList.forEach(System.out::println);
     }
 
     @Override
@@ -31,10 +32,8 @@ public class Cart implements CartInterface {
     @Override
     public void removeCart(int numId) {
         CartItem cartItem = mCartItem.get(numId);
+
         removeCart(cartItem);
-    }
-    public void removeCart(CartItem cartItem) {
-        mCartItem.remove(cartItem);
     }
 
     @Override
@@ -42,21 +41,20 @@ public class Cart implements CartInterface {
         mCartItem.clear();
     }
 
-    public CartItem getCartItem(int index) {
-        return mCartItem.get(index);
+    public void removeCart(CartItem cartItem) {
+        mCartItem.remove(cartItem);
     }
+
     public CartItem getCartItem(String bookID) {
         return mCartItem.get(indexOf(bookID));
     }
 
     public int indexOf(String bookID) {
-        for (int i = 0; i < mCartItem.size(); i++) {
-            CartItem cartItem = mCartItem.get(i);
-            if (bookID.equals(cartItem.getBookID())) {
-                return i;
-            }
-        }
-        return -1;
+        return mCartItem.stream()
+                .filter(cartItem -> bookID.equals(cartItem.getBookID()))
+                .findFirst()
+                .map(mCartItem::indexOf)
+                .orElse(-1);
     }
 
     public void printCart() {
@@ -64,13 +62,17 @@ public class Cart implements CartInterface {
     }
     private String rendering() {
         StringBuilder sb = new StringBuilder();
-        for (CartItem cartItem : mCartItem) {
-            sb.append("    ").append(cartItem).append("\n");
-        }
+        mCartItem.forEach(cartItem -> sb.append("    ").append(cartItem).append("\n"));
         return sb.toString();
     }
 
     public boolean isCartEmpty() {
         return mCartItem.isEmpty();
+    }
+
+    public int calculateTotalPrice() {
+        return mCartItem.stream()
+                .mapToInt(CartItem::getTotalPrice)
+                .sum();
     }
 }

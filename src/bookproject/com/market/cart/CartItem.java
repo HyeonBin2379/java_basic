@@ -1,4 +1,6 @@
-package bookproject;
+package bookproject.com.market.cart;
+
+import bookproject.com.market.bookitem.Book;
 
 import java.util.List;
 
@@ -7,7 +9,7 @@ public class CartItem {
 	private Book itemBook;
 	private String bookID;
 	private int quantity;
-	private int  totalPrice;
+	private int totalPrice;
 	
 	public CartItem() {
 		// TODO Auto-generated constructor stub

@@ -1,8 +1,14 @@
-package bookproject;
+package bookproject.com.market.main;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
+import bookproject.com.market.bookitem.Book;
+import bookproject.com.market.cart.Cart;
+import bookproject.com.market.cart.CartItem;
+import bookproject.com.market.member.Admin;
+import bookproject.com.market.member.User;
+
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
 
 public class Welcome {
 
@@ -18,7 +24,6 @@ public class Welcome {
              7. 영수증 표시하기\t\t8. 종료
              9. 관리자 로그인
             *******************************************************""";
-    private static final Scanner input = new Scanner(System.in);
     private static final Cart mCart = new Cart();
 
     private static boolean isRunning = true;
@@ -28,6 +33,7 @@ public class Welcome {
         List<Book> mBookList = new ArrayList<>();
 
         // 현재 사용자의 이름과 연락처 입력 -> 사용자 객체 생성
+        Scanner input = new Scanner(System.in);
         System.out.print("당신의 이름을 입력하세요. : ");
         String userName = input.nextLine();
         System.out.print("연락처를 입력하세요. : ");
@@ -62,15 +68,17 @@ public class Welcome {
 
     // 선택 가능한 메뉴 목록 출력
     public static void menuIntroduction() {
-        // 메뉴 출력
         System.out.println(MENU);
     }
 
     // 사용자 정보 출력하기
     public static void menuGuestInfo(String name, String mobile) {
         // 이름 길이에 관계없이 정렬 형식을 유지하도록 출력
-        System.out.println("현재 고객 정보 :");
-        System.out.printf("이름 %-5s\t연락처 %s\n", mUser.getName(), mUser.getPhone());
+        String userInfoFormat = """
+                현재 고객 정보 :
+                이름 %-5s\t연락처 %s
+                """;
+        System.out.printf(userInfoFormat, name, mobile);
     }
 
     // 장바구니 상품 목록 보기
@@ -85,24 +93,25 @@ public class Welcome {
             return;
         }
         System.out.println("장바구니의 모든 항목을 삭제하겠습니까? Y | N");
+        Scanner input = new Scanner(System.in);
         String str = input.next();
 
         if (str.equalsIgnoreCase("Y")) {
-            System.out.println("장바구니의 모든 항목을 삭제했습니다.");
             mCart.deleteBook();
+            System.out.println("장바구니의 모든 항목을 삭제했습니다.");
         }
     }
 
     // 바구니에 항목 추가하기
     public static void menuCartAddItem(List<Book> bookList) {
-        // 도서 목록 생성
+        // 도서 목록 생성 및 출력
         BookList(bookList);
-
-        // 현재 도서 목록 출력
         for (Book book : bookList) {
             System.out.println(book);
         }
 
+        // 장바구니에 항목 추가
+        Scanner input = new Scanner(System.in);
         boolean quit = false;
         while (!quit) {
             // 구매할 도서 ID 입력
@@ -147,6 +156,7 @@ public class Welcome {
 
         while (true) {
             System.out.print("장바구니에서 삭제할 도서의 ID를 입력하세요 :");
+            Scanner input = new Scanner(System.in);
             String str = input.next();
 
             if (mCart.isCartInBook(str)) {
@@ -167,7 +177,48 @@ public class Welcome {
 
     // 영수증 표시하기
     public static void menuCartBill() {
-        System.out.println("7. 영수증 표기하기");
+        if (mCart.isCartEmpty()) {
+            System.out.println("장바구니에 항목이 없습니다.");
+            return;
+        }
+        Scanner input = new Scanner(System.in);
+        System.out.println("배송받을 분은 고객 정보와 같습니까? Y | N");
+        String str = input.nextLine();
+
+        if (str.equalsIgnoreCase("Y")) {
+            System.out.print("배송지를 입력해주세요 ");
+            String address = input.nextLine();
+            printBill(mUser.getName(), mUser.getPhone(), address);
+            return;
+        }
+
+        System.out.print("배송받을 고객명을 입력하세요 ");
+        String name = input.nextLine();
+        System.out.print("배송받을 고객의 연락처를 입력하세요 ");
+        String phone = input.nextLine();
+        System.out.print("배송받을 고객의 배송지를 입력하세요 ");
+        String address = input.nextLine();
+        printBill(name, phone, address);
+    }
+
+    public static void printBill(String name, String phone, String address) {
+        LocalDate today = LocalDate.now();
+        String strDate = today.format(DateTimeFormatter.ofPattern("MM/dd/yyyy"));
+
+        String header = """
+                -------------배송받을 고객 정보---------------
+                고객명 : %s  \t\t연락처 : %s
+                배송지 : %s\t\t발송일 : %s
+                """;
+        System.out.printf(header, name, phone, address, strDate);
+
+        menuCartItemList();
+
+        String footer = """
+                \t\t\t주문 총금액 : %d원
+                -------------------------------------------
+                """;
+        System.out.printf(footer, mCart.calculateTotalPrice());
     }
 
     // 메뉴 종료
@@ -183,20 +234,29 @@ public class Welcome {
                 "ISBN1235 | 안드로이드 프로그래밍 | 33000 | 우재남 | 실습 단계별 명쾌한 멘토링! | IT전문서 | 2022/01/22",
                 "ISBN1236 | 안드로이드 프로그래밍 | 33000 | 고광일 | 컴퓨팅 사고력을 키우는 블록 코딩 | 컴퓨터입문 | 2019/06/10"
         };
+        Arrays.stream(tuples)
+                .map(tuple -> Arrays.asList(tuple.split(" \\| ")))
+                .filter(attributes -> contains(bookList, attributes.get(0)))
+                .forEach(attributes -> addBook(bookList, attributes));
 
-        for (int i = 0; i < tuples.length; i++) {
-            String[] attributes = tuples[i].split(" \\| ");
-            Book book = findBookByNumId(bookList, attributes[0]);
+    }
 
-            if (book != null) {
-                continue;
-            }
-            bookList.add(new Book(attributes[0], attributes[1], Integer.parseInt(attributes[2])));
-            bookList.get(i).setAuthor(attributes[3]);
-            bookList.get(i).setDescription(attributes[4]);
-            bookList.get(i).setCategory(attributes[5]);
-            bookList.get(i).setReleaseDate(attributes[6]);
-        }
+    private static boolean contains(List<Book> bookList, String bookID) {
+        return bookList.stream()
+                .map(Book::getBookId)
+                .noneMatch(id -> id.equals(bookID));
+    }
+
+
+    private static void addBook(List<Book> bookList, List<String> attributes) {
+        Book newBook = new Book(attributes.get(0), attributes.get(1), Integer.parseInt(attributes.get(2)));
+
+        newBook.setAuthor(attributes.get(3));
+        newBook.setDescription(attributes.get(4));
+        newBook.setCategory(attributes.get(5));
+        newBook.setReleaseDate(attributes.get(6));
+
+        bookList.add(newBook);
     }
 
     public static boolean isCartInBook(String bookId) {
@@ -204,6 +264,7 @@ public class Welcome {
     }
 
     public static void menuAdminLogin() {
+        Scanner input = new Scanner(System.in);
         // 관리자 정보 입력 -> 관리자계정 로그인 시도
         System.out.println("관리자 정보를 입력하세요");
         System.out.print("아이디 : ");
@@ -225,11 +286,9 @@ public class Welcome {
     }
 
     private static Book findBookByNumId(List<Book> bookList, String bookId) {
-        for (Book book : bookList) {
-            if (bookId.equals(book.getBookId())) {
-                return book;
-            }
-        }
-        return null;
+        return bookList.stream()
+                .filter(book -> bookId.equals(book.getBookId()))
+                .findAny()
+                .orElse(null);
     }
 }
