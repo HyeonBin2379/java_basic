@@ -20,6 +20,6 @@ public class Board {
     public String toString() {
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy.MM.dd");
 
-        return String.format("%s\t\t%s\t\t%s\t\t%s", bno, bwriter, formatter.format(bdate), btitle);
+        return String.format("%d\t\t%s\t\t%s\t\t%s", bno, bwriter, formatter.format(bdate), btitle);
     }
 }

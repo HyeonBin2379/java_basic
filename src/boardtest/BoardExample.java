@@ -5,29 +5,30 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.stream.IntStream;
 
 public class BoardExample {
 
     private static final Scanner input = new Scanner(System.in);
     private static final List<Board> boards = new ArrayList<>();
 
-    private static int count = 0;
     private static boolean isRunning = true;
 
     public static void main(String[] args) throws ParseException {
-        list();
+        BoardExample boardExample = new BoardExample();
+        boardExample.list();
     }
 
-    public static void list() throws ParseException {
+    public void list() throws ParseException {
         Board board1 = new Board();
-        board1.setBno(++count);
+        board1.setBno(boards.size()+1);
         board1.setBwriter("winter");
         board1.setBdate(new Date());
         board1.setBtitle("게시판에 오신 것을 환영합니다.");
         boards.add(board1);
 
         Board board2 = new Board();
-        board2.setBno(++count);
+        board2.setBno(boards.size()+1);
         board2.setBwriter("winter");
         board2.setBdate(new Date());
         board2.setBtitle("올 겨울은 많이 춥습니다.");
@@ -42,7 +43,7 @@ public class BoardExample {
                     """;
             System.out.print(listTitle);
             boards.stream()
-                    .sorted(Comparator.comparingInt(Board::getBno).reversed())
+                    .sorted(Comparator.comparing(Board::getBno).reversed())
                     .forEach(System.out::println);
             System.out.println("\n---------------------------------------------------------------");
 
@@ -50,38 +51,30 @@ public class BoardExample {
         }
     }
 
-    public static void mainMenu() {
+    public void mainMenu() {
         System.out.println("메인 메뉴: 1. Create | 2.Read | 3.Clear | 4.Exit");
         System.out.print("메뉴 선택: ");
-        int menuNum = input.nextInt();
+        int menuNum = Integer.parseInt(input.nextLine());
 
         switch (menuNum) {
-            case 1:
-                create();
-                break;
-            case 2:
-                read();
-                break;
-            case 3:
-                clear();
-                break;
-            case 4:
-                exit();
-                break;
+            case 1 -> create();
+            case 2 -> read();
+            case 3 -> clear();
+            case 4 -> exit();
         }
     }
 
-    public static void create() {
+    public void create() {
         System.out.println("[새 게시물 입력]");
         System.out.print("제목: ");
-        String title = input.next();
-        input.nextLine();
+        String title = input.nextLine();
+        input.reset();
         System.out.print("내용: ");
-        String content = input.next();
-        input.nextLine();
+        String content = input.nextLine();
+        input.reset();
         System.out.print("작성자: ");
-        String writer = input.next();
-        input.nextLine();
+        String writer = input.nextLine();
+        input.reset();
 
         System.out.println("-------------------------------");
         System.out.println("보조 메뉴: 1.Ok | 2.Cancel");
@@ -90,7 +83,7 @@ public class BoardExample {
 
         if (menuNum == 1) {
             Board board = new Board();
-            board.setBno(++count);
+            board.setBno(boards.size()+1);
             board.setBtitle(title);
             board.setBcontent(content);
             board.setBwriter(writer);
@@ -101,11 +94,11 @@ public class BoardExample {
         System.out.println("** create() 메소드 실행됨 **");
     }
 
-    public static void read() {
+    public void read() {
         System.out.println("[게시물 읽기]");
         System.out.print("bno: ");
-        int bno = Integer.parseInt(input.next());
-        input.nextLine();
+        int bno = Integer.parseInt(input.nextLine());
+        input.reset();
 
         String boardInfo = """
                 ##############
@@ -117,18 +110,17 @@ public class BoardExample {
                 ##############
                 """;
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy.MM.dd");
-        Board board = boards.get(bno-1);
+        Board board = boards.get(findIndex(bno));
         System.out.printf(boardInfo, board.getBno(), board.getBtitle(), board.getBcontent(), board.getBwriter(), formatter.format(board.getBdate()));
         subMenu(bno);
         System.out.println("** read() 메소드 실행됨 **");
     }
 
-    public static void subMenu(int bno) {
+    public void subMenu(int bno) {
         System.out.println("--------------------------------------------");
         System.out.println("보조 메뉴: 1.Update | 2.Delete | 3.List");
         System.out.print("메뉴 선택: ");
-        int menuNum = Integer.parseInt(input.next());
-        input.nextLine();
+        int menuNum = Integer.parseInt(input.nextLine());
 
         switch (menuNum) {
             case 1:
@@ -137,25 +129,27 @@ public class BoardExample {
             case 2:
                 delete(bno);
                 break;
+            case 3:
+                break;
         }
     }
-    public static void update(int bno) {
+    public void update(int bno) {
         System.out.println("[수정 내역 입력]");
         System.out.print("제목: ");
-        String title = input.next();
-        input.nextLine();
+        String title = input.nextLine();
+        input.reset();
         System.out.print("내용: ");
-        String content = input.next();
-        input.nextLine();
+        String content = input.nextLine();
+        input.reset();
         System.out.print("작성자: ");
-        String writer = input.next();
-        input.nextLine();
+        String writer = input.nextLine();
+        input.reset();
 
         System.out.println("--------------------------------------------");
         System.out.println("보조 메뉴: 1.Ok | 2.Cancel");
         System.out.print("메뉴 선택: ");
-        int menuNum = Integer.parseInt(input.next());
-        input.nextLine();
+        int menuNum = Integer.parseInt(input.nextLine());
+        input.reset();
 
         if (menuNum == 1) {
             int index = findIndex(bno);
@@ -165,20 +159,24 @@ public class BoardExample {
         }
     }
 
-    public static void delete(int bno) {
-        Board found = boards.get(findIndex(bno));
-        boards.remove(found);
+    public void delete(int bno) {
+        int index = findIndex(bno);
+        if (index == -1) {
+            throw new IllegalArgumentException();
+        }
+        IntStream.range(index+1, boards.size()).forEach(idx -> boards.get(idx).setBno(index));
+        boards.remove(findIndex(bno));
     }
 
-    private static int findIndex(int bno) {
+    private int findIndex(int bno) {
         return boards.stream()
                 .filter(board -> board.getBno() == bno)
                 .findFirst()
                 .map(boards::indexOf)
-                .get();
+                .orElse(-1);
     }
 
-    public static void clear() {
+    public void clear() {
         String title = """
                 
                 [게시물 전체 삭제]
@@ -186,7 +184,7 @@ public class BoardExample {
                 보조 메뉴: 1.Ok | 2.Cancel""";
         System.out.println(title);
         System.out.print("메뉴 선택: ");
-        int menuNum = input.nextInt();
+        int menuNum = Integer.parseInt(input.nextLine());
 
         if (menuNum == 1) {
             boards.clear();
@@ -195,7 +193,7 @@ public class BoardExample {
         System.out.println("** clear() 메소드 실행됨 **");
     }
 
-    public static void exit() {
+    public void exit() {
         isRunning = false;
         System.out.println("** 게시판 종료 **");
     }
