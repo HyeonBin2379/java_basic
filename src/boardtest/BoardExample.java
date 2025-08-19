@@ -1,7 +1,6 @@
 package boardtest;
 
 import java.sql.Timestamp;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.util.*;
@@ -14,12 +13,12 @@ public class BoardExample {
 
     private static boolean isRunning = true;
 
-    public static void main(String[] args) throws ParseException {
+    public static void main(String[] args) {
         BoardExample boardExample = new BoardExample();
         boardExample.list();
     }
 
-    public void list() throws ParseException {
+    public void list() {
         Board board1 = new Board();
         board1.setBno(boards.size()+1);
         board1.setBwriter("winter");
@@ -52,7 +51,7 @@ public class BoardExample {
     }
 
     public void mainMenu() {
-        System.out.println("메인 메뉴: 1. Create | 2.Read | 3.Clear | 4.Exit");
+        System.out.println("메인 메뉴: 1.Create | 2.Read | 3.Clear | 4.Exit");
         System.out.print("메뉴 선택: ");
         int menuNum = Integer.parseInt(input.nextLine());
 
@@ -162,9 +161,9 @@ public class BoardExample {
     public void delete(int bno) {
         int index = findIndex(bno);
         if (index == -1) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("범위를 초과하는 게시글 번호입니다.");
         }
-        IntStream.range(index+1, boards.size()).forEach(idx -> boards.get(idx).setBno(index));
+        IntStream.range(index+1, boards.size()).forEach(idx -> boards.get(idx).setBno(idx));
         boards.remove(findIndex(bno));
     }
 
