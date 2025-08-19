@@ -1,6 +1,7 @@
 package bookproject.com.market.main;
 
 import bookproject.com.market.bookitem.Book;
+import bookproject.com.market.bookitem.BookList;
 import bookproject.com.market.cart.Cart;
 import bookproject.com.market.cart.CartItem;
 import bookproject.com.market.member.Admin;
@@ -24,14 +25,18 @@ public class Welcome {
              7. 영수증 표시하기\t\t8. 종료
              9. 관리자 로그인
             *******************************************************""";
+    private static final List<String> tuples = Arrays.asList(
+            "ISBN1234 | 쉽게 배우는 JSP 웹 프로그래밍 | 27000 | 송미영 | 단계별로 쇼핑몰을 구현하며 배우는 JSP 웹 프로그래밍 | IT전문서 | 2018/10/08",
+            "ISBN1235 | 안드로이드 프로그래밍 | 33000 | 우재남 | 실습 단계별 명쾌한 멘토링! | IT전문서 | 2022/01/22",
+            "ISBN1236 | 안드로이드 프로그래밍 | 33000 | 고광일 | 컴퓨팅 사고력을 키우는 블록 코딩 | 컴퓨터입문 | 2019/06/10"
+    );
     private static final Cart mCart = new Cart();
 
     private static boolean isRunning = true;
     private static User mUser;
 
     public static void main(String[] args) {
-        List<Book> mBookList = new ArrayList<>();
-
+        BookList mBookList = new BookList(tuples);
         // 현재 사용자의 이름과 연락처 입력 -> 사용자 객체 생성
         Scanner input = new Scanner(System.in);
         System.out.print("당신의 이름을 입력하세요. : ");
@@ -88,10 +93,12 @@ public class Welcome {
 
     // 장바구니 비우기
     public static void menuCartClear() {
+        // 장바구니가 빈 경우
         if (mCart.isCartEmpty()) {
             System.out.println("장바구니의 항목이 없습니다.");
             return;
         }
+        // 장바구니의 모든 항목 삭제
         System.out.println("장바구니의 모든 항목을 삭제하겠습니까? Y | N");
         Scanner input = new Scanner(System.in);
         String str = input.next();
@@ -103,12 +110,9 @@ public class Welcome {
     }
 
     // 바구니에 항목 추가하기
-    public static void menuCartAddItem(List<Book> bookList) {
-        // 도서 목록 생성 및 출력
-        BookList(bookList);
-        for (Book book : bookList) {
-            System.out.println(book);
-        }
+    public static void menuCartAddItem(BookList bookList) {
+        // 도서 목록 출력
+        bookList.print();
 
         // 장바구니에 항목 추가
         Scanner input = new Scanner(System.in);
@@ -120,7 +124,7 @@ public class Welcome {
             input.nextLine();
 
             // 구매할 도서 ID에 대응되는 도서를 도서목록에서 검색
-            Book book = findBookByNumId(bookList, str);
+            Book book = bookList.findByBookId(str);
 
             // 구매할 도서가 도서목록에 없음
             if (book == null) {
@@ -227,38 +231,6 @@ public class Welcome {
         isRunning = false;
     }
 
-    // 도서 목록 생성
-    public static void BookList(List<Book> bookList) {
-        String[] tuples = {
-                "ISBN1234 | 쉽게 배우는 JSP 웹 프로그래밍 | 27000 | 송미영 | 단계별로 쇼핑몰을 구현하며 배우는 JSP 웹 프로그래밍 | IT전문서 | 2018/10/08",
-                "ISBN1235 | 안드로이드 프로그래밍 | 33000 | 우재남 | 실습 단계별 명쾌한 멘토링! | IT전문서 | 2022/01/22",
-                "ISBN1236 | 안드로이드 프로그래밍 | 33000 | 고광일 | 컴퓨팅 사고력을 키우는 블록 코딩 | 컴퓨터입문 | 2019/06/10"
-        };
-        Arrays.stream(tuples)
-                .map(tuple -> Arrays.asList(tuple.split(" \\| ")))
-                .filter(attributes -> contains(bookList, attributes.get(0)))
-                .forEach(attributes -> addBook(bookList, attributes));
-
-    }
-
-    private static boolean contains(List<Book> bookList, String bookID) {
-        return bookList.stream()
-                .map(Book::getBookId)
-                .noneMatch(id -> id.equals(bookID));
-    }
-
-
-    private static void addBook(List<Book> bookList, List<String> attributes) {
-        Book newBook = new Book(attributes.get(0), attributes.get(1), Integer.parseInt(attributes.get(2)));
-
-        newBook.setAuthor(attributes.get(3));
-        newBook.setDescription(attributes.get(4));
-        newBook.setCategory(attributes.get(5));
-        newBook.setReleaseDate(attributes.get(6));
-
-        bookList.add(newBook);
-    }
-
     public static boolean isCartInBook(String bookId) {
         return mCart.isCartInBook(bookId);
     }
@@ -283,12 +255,5 @@ public class Welcome {
             return;
         }
         System.out.println("관리자 정보가 일치하지 않습니다.");
-    }
-
-    private static Book findBookByNumId(List<Book> bookList, String bookId) {
-        return bookList.stream()
-                .filter(book -> bookId.equals(book.getBookId()))
-                .findAny()
-                .orElse(null);
     }
 }

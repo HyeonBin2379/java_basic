@@ -51,6 +51,10 @@ public class CartItem {
 		return totalPrice;
 	}
 
+	public void setTotalPrice(int totalPrice) {
+		this.totalPrice = totalPrice;
+	}
+
 	public void updateTotalPrice() {
 		totalPrice = itemBook.getUnitPrice() * this.quantity;
 	}
