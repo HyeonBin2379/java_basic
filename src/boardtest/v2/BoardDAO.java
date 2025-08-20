@@ -7,16 +7,10 @@ import boardtest.v2.exception.BoardException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-import static boardtest.v2.common.BoardText.*;
-
 // 사용자가 현재 게시물 목록 열람 가능
 // 사용자는 메뉴를 선택하여 게시글 생성, 조회, 삭제 가능
 // 사용자는 게시판 프로그램을 종료 가능
-public class BoardExample {
-
-    private static final String menuNumberRegex = "[1-4]";
-    private static final String checkNumberRegex = "[1-2]";
-    private static final String readOptionRegex = "[1-3]";
+public class BoardDAO {
 
     private static ValidCheck validCheck = new ValidCheck();
     private static final Scanner scanner = new Scanner(System.in);
@@ -28,9 +22,9 @@ public class BoardExample {
     // BoardManager가 게시판을 관리
     BoardManager boardManager;
 
-    public BoardExample() {
+    public BoardDAO() {
     }
-    public BoardExample(BoardManager boardManager) {
+    public BoardDAO(BoardManager boardManager) {
         this.boardManager = boardManager;
     }
 
@@ -41,24 +35,25 @@ public class BoardExample {
         Map<String, Board> boardMap = boardManager.getBoardMap();
         List<Board> boardList = new LinkedList<>(boardMap.values());
         String boardListData = rendering(boardList);
-        System.out.print(getBoardList(boardListData));
+        System.out.print(BoardText.getBoardList(boardListData));
 
         mainMenu();
     }
 
     private String rendering(List<Board> boardList) {
         StringBuilder sb = new StringBuilder();
+        // 스트림 사용 -> 원본의 정렬 순서를 유지하면서 역순으로 리스트 출력 가능
         boardList.stream()
                 .sorted(Comparator.comparing(Board::getBno).reversed())
-                .forEach(board -> sb.append(String.format("%-4s %-20s %-20s %-20s\n", board.getBno(), board.getBWriter(), dateFormat.format(board.getBDate()), board.getBTitle())));
+                .forEach(board -> sb.append(BoardText.getBoardInfo(BoardText.RECORD, board)));
 
         return sb.toString();
     }
 
     // 메인 메뉴를 호출
     public void mainMenu() {
-        System.out.println(getDecorated(BORDER_LINE, MAIN_MENU.getText()));
-        System.out.print(MENU_SELECT.getText());
+        System.out.println(BoardText.getDecorated(BoardText.BORDER_LINE, BoardText.MAIN_MENU.getText()));
+        System.out.print(BoardText.MENU_SELECT.getText());
     }
 
     // 게시물 메뉴 선택 기능
@@ -71,7 +66,7 @@ public class BoardExample {
 
                 validCheck.isMenuValid(menuNumber);
                 if (menuNumber.equals("4")) {
-                    System.out.println(EXIT.getText());
+                    System.out.println(BoardText.EXIT.getText());
                     break;
                 }
                 switch (menuNumber) {
@@ -87,12 +82,12 @@ public class BoardExample {
 
     // 새 글 작성 후 저장 기능 -> Map 컬렉션에 저장
     public void create() throws BoardException {
-        System.out.println(CREATE.getText());
-        System.out.print(TITLE.getText());
+        System.out.println(BoardText.CREATE.getText());
+        System.out.print(BoardText.TITLE.getText());
         String title = scanner.nextLine();
-        System.out.print(BOARD.getText());
+        System.out.print(BoardText.BOARD.getText());
         String content = scanner.nextLine();
-        System.out.print(WRITER.getText());
+        System.out.print(BoardText.WRITER.getText());
         String writer = scanner.nextLine();
 
         // 보조 메뉴 중 1번 선택 시
@@ -115,10 +110,10 @@ public class BoardExample {
 
     // 보조 메뉴 확인 및 선택 메서드
     private boolean checkMenu() {
-        System.out.print(BoardText.getSubMenu(CHECK_MENU));
+        System.out.print(BoardText.getSubMenu(BoardText.CHECK_MENU));
         while (true) {
             try {
-                System.out.print(MENU_SELECT.getText());
+                System.out.print(BoardText.MENU_SELECT.getText());
                 String menuNumber = scanner.nextLine();
 
                 validCheck.isCheckMenuValid(menuNumber);
@@ -131,18 +126,17 @@ public class BoardExample {
     }
 
     public void read() throws BoardException {
-        System.out.println(READ.getText());
+        System.out.println(BoardText.READ.getText());
         while (true) {
             try {
-                System.out.print(BNO.getText());
+                System.out.print(BoardText.BNO.getText());
                 String numberInput = scanner.nextLine();
-
                 Map<String, Board> boardMap = boardManager.getBoardMap();
-                validCheck.isValidBoardNumber(numberInput, boardMap::containsKey);
+
+                validCheck.isValidBoardNumber(numberInput, boardMap.keySet());
 
                 Board board = boardMap.get(numberInput);
                 System.out.println(BoardText.getReadInfo(board));
-
                 readOption(board.getBno());
                 return;
             } catch (BoardException e) {
@@ -152,8 +146,8 @@ public class BoardExample {
     }
 
     public void readOption(int bno) throws BoardException {
-        System.out.print(BoardText.getSubMenu(READ_CHECK_MENU));
-        System.out.print(MENU_SELECT.getText());
+        System.out.print(BoardText.getSubMenu(BoardText.READ_CHECK_MENU));
+        System.out.print(BoardText.MENU_SELECT.getText());
         String menuNumber = scanner.nextLine();
 
         validCheck.isReadOptionMenuValid(menuNumber);
@@ -167,15 +161,16 @@ public class BoardExample {
     }
 
     public void update(int bno) throws BoardException {
-        System.out.println(UPDATE.getText());
-        System.out.print(TITLE.getText());
+        System.out.println(BoardText.UPDATE.getText());
+        System.out.print(BoardText.TITLE.getText());
         String title = scanner.nextLine();
-        System.out.print(BOARD.getText());
+        System.out.print(BoardText.BOARD.getText());
         String content = scanner.nextLine();
-        System.out.print(WRITER.getText());
+        System.out.print(BoardText.WRITER.getText());
         String writer = scanner.nextLine();
 
         // 이미 read()에서 bno에 대응되는 Board의 존재 여부에 관한 유효성 검사를 수행
+        // 따라서 update()에서는 유효성 검사 불필요
         Map<String, Board> boardMap = boardManager.getBoardMap();
         Board board = boardMap.get(Integer.toString(bno));
         board.setBTitle(title);
@@ -196,7 +191,7 @@ public class BoardExample {
     }
 
     public void clear() {
-        System.out.println(CLEAR.getText());
+        System.out.println(BoardText.CLEAR.getText());
         Map<String, Board> boardMap = boardManager.getBoardMap();
 
         if (boardMap.isEmpty()) {

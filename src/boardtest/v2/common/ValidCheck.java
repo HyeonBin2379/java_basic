@@ -1,7 +1,10 @@
 package boardtest.v2.common;
 
+import boardtest.v2.Board;
 import boardtest.v2.exception.BoardException;
 
+import java.util.Map;
+import java.util.Set;
 import java.util.function.Predicate;
 
 public class ValidCheck {
@@ -26,18 +29,19 @@ public class ValidCheck {
     }
 
     // 2번 예외 처리
-    public void isValidBoardNumber(String number, Predicate<String> isBoardNumberValid) {
+    public void isValidBoardNumber(String number, Set<String> boardKeySet) {
         // read 입력값이 숫자가 아닌 경우
         if(number.isEmpty()) {
             throw new BoardException(ErrorCode.INVALID_EMPTY);
         }
-
         if(!(number.matches(CHECK_NUMBER))) {
             throw new BoardException(ErrorCode.INVALID_CHECK_NUMBER);
         }
+
         //read 값이 게시판에 존재 X, 숫자 O
-        if(!isBoardNumberValid.test(number))
+        if(!boardKeySet.contains(number)) {
             throw new BoardException(ErrorCode.INVALID_BOARD_NUMBER);
+        }
     }
 
     // read 메서드의 옵션 입력 번호 예외 처리
