@@ -1,4 +1,4 @@
-package bookproject.com.market.member;
+package bookproject.com.market.v1.member;
 
 public class User extends Person {
 	public User(String name, String phone) {

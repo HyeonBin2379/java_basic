@@ -1,4 +1,4 @@
-package bookproject.com.market.member;
+package bookproject.com.market.v1.member;
 
 public class Person {
 	private String name;

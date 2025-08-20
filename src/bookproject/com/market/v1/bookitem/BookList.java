@@ -1,4 +1,4 @@
-package bookproject.com.market.bookitem;
+package bookproject.com.market.v1.bookitem;
 
 import java.util.ArrayList;
 import java.util.Arrays;

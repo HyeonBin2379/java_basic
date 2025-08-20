@@ -1,0 +1,68 @@
+package bookproject.com.market.v0.cart;
+
+import bookproject.com.market.v0.bookitem.Book;
+
+import java.util.List;
+
+public class CartItem {
+
+	private Book itemBook;
+	private String bookID;
+	private int quantity;
+	private int totalPrice;
+	
+	public CartItem() {
+		// TODO Auto-generated constructor stub
+	}
+	
+	public CartItem(Book book) {
+		this.itemBook = book;
+		this.bookID = book.getBookId();
+		this.quantity = 1;
+		updateTotalPrice();
+	}
+
+	public Book getItemBook() {
+		return itemBook;
+	}
+
+	public void setItemBook(Book itemBook) {
+		this.itemBook = itemBook;
+	}
+	public String getBookID() {
+		return bookID;
+	}
+
+	public void setBookID(String bookID) {
+		this.bookID = bookID;
+		this.updateTotalPrice();
+	}
+	
+	public int getQuantity() {
+		return quantity;
+	}
+	
+	public void setQuantity(int quantity) {
+		this.quantity = quantity;
+		this.updateTotalPrice();
+	}
+	
+	public int getTotalPrice() {
+		return totalPrice;
+	}
+
+	public void setTotalPrice(int totalPrice) {
+		this.totalPrice = totalPrice;
+	}
+
+	public void updateTotalPrice() {
+		totalPrice = itemBook.getUnitPrice() * this.quantity;
+	}
+
+	@Override
+	public String toString() {
+		List<String> fields = List.of(bookID, Integer.toString(quantity), Integer.toString(totalPrice));
+
+		return String.join("\t|    ", fields);
+	}
+}

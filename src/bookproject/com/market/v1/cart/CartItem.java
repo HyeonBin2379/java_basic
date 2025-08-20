@@ -1,7 +1,6 @@
-package bookproject.com.market.cart;
+package bookproject.com.market.v1.cart;
 
-import bookproject.com.market.bookitem.Book;
-
+import bookproject.com.market.v1.bookitem.Book;
 import java.util.List;
 
 public class CartItem {

@@ -1,4 +1,4 @@
-package bookproject.com.market.bookitem;
+package bookproject.com.market.v0.bookitem;
 
 import java.util.List;
 
