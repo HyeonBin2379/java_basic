@@ -4,11 +4,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class BookList {
+public class BookDAO {
 
     private final List<Book> bookList;
 
-    public BookList(List<String> tuples) {
+    public BookDAO(List<String> tuples) {
         this.bookList = new ArrayList<>();
         createBookList(tuples);
     }
@@ -16,14 +16,14 @@ public class BookList {
     public void createBookList(List<String> tuples) {
         tuples.stream()
                 .map(tuple -> Arrays.asList(tuple.split(" \\| ")))
-                .filter(attributes -> this.contains(attributes.get(0)))
+                .filter(attributes -> !this.contains(attributes.get(0)))
                 .forEach(this::insertBook);
     }
 
     public boolean contains(String bookID) {
         return bookList.stream()
                 .map(Book::getBookId)
-                .noneMatch(id -> id.equals(bookID));
+                .anyMatch(id -> id.equals(bookID));
     }
 
 

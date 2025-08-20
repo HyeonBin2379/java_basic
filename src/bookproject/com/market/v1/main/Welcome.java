@@ -1,7 +1,9 @@
 package bookproject.com.market.v1.main;
 
+import static bookproject.com.market.common.BookMarketText.*;
+
 import bookproject.com.market.v1.bookitem.Book;
-import bookproject.com.market.v1.bookitem.BookList;
+import bookproject.com.market.v1.bookitem.BookDAO;
 import bookproject.com.market.v1.cart.Cart;
 import bookproject.com.market.v1.cart.CartItem;
 import bookproject.com.market.v1.member.Admin;
@@ -15,43 +17,32 @@ import java.util.Scanner;
 public class Welcome {
 
     // 각 메뉴별 명칭에 관계없이 좌우 정렬을 유지하도록 출력
-    private static final String MENU = """
-            *******************************************************
-                    Welcome to Shopping Mall
-                    Welcome to Book Market!
-            *******************************************************
-             1. 고객 정보 확인하기\t\t4. 바구니에 항목 추가하기
-             2. 장바구니 상품 목록 보기\t5. 장바구니의 항목 수량 수정
-             3. 장바구니 비우기\t\t6. 장바구니의 항목 삭제하기
-             7. 영수증 표시하기\t\t8. 종료
-             9. 관리자 로그인
-            *******************************************************""";
     private static final List<String> tuples = Arrays.asList(
             "ISBN1234 | 쉽게 배우는 JSP 웹 프로그래밍 | 27000 | 송미영 | 단계별로 쇼핑몰을 구현하며 배우는 JSP 웹 프로그래밍 | IT전문서 | 2018/10/08",
             "ISBN1235 | 안드로이드 프로그래밍 | 33000 | 우재남 | 실습 단계별 명쾌한 멘토링! | IT전문서 | 2022/01/22",
             "ISBN1236 | 안드로이드 프로그래밍 | 33000 | 고광일 | 컴퓨팅 사고력을 키우는 블록 코딩 | 컴퓨터입문 | 2019/06/10"
     );
+    private static final Scanner input = new Scanner(System.in);
     private static final Cart mCart = new Cart();
+    private static final BookDAO mBookList = new BookDAO(tuples);
 
-    private static boolean isRunning = true;
+    private static boolean isRunning;
     private static User mUser;
 
     public static void main(String[] args) {
-        BookList mBookList = new BookList(tuples);
         // 현재 사용자의 이름과 연락처 입력 -> 사용자 객체 생성
-        Scanner input = new Scanner(System.in);
         System.out.print("당신의 이름을 입력하세요. : ");
         String userName = input.nextLine();
         System.out.print("연락처를 입력하세요. : ");
         String userMobile = input.nextLine();
 
         mUser = new User(userName, userMobile);
-
+        isRunning = true;
         while (isRunning) {
             // 메뉴 출력 후 메뉴 번호 입력
             menuIntroduction();
             System.out.print("메뉴 번호를 선택해주세요 : ");
-            int menuNum = input.nextInt();
+            int menuNum = Integer.parseInt(input.nextLine());
 
             if (menuNum < 1 || menuNum > 9) {
                 System.out.println("1~9 사이의 숫자만 입력 가능합니다.");
@@ -74,17 +65,13 @@ public class Welcome {
 
     // 선택 가능한 메뉴 목록 출력
     public static void menuIntroduction() {
-        System.out.println(MENU);
+        System.out.println(MENU.getText());
     }
 
     // 사용자 정보 출력하기
     public static void menuGuestInfo(String name, String mobile) {
         // 이름 길이에 관계없이 정렬 형식을 유지하도록 출력
-        String userInfoFormat = """
-                현재 고객 정보 :
-                이름 %-5s\t연락처 %s
-                """;
-        System.out.printf(userInfoFormat, name, mobile);
+        System.out.printf(USER_INFO.getText(), name, mobile);
     }
 
     // 장바구니 상품 목록 보기
@@ -101,8 +88,7 @@ public class Welcome {
         }
         // 장바구니의 모든 항목 삭제
         System.out.println("장바구니의 모든 항목을 삭제하겠습니까? Y | N");
-        Scanner input = new Scanner(System.in);
-        String str = input.next();
+        String str = input.nextLine();
 
         if (str.equalsIgnoreCase("Y")) {
             mCart.deleteBook();
@@ -111,18 +97,16 @@ public class Welcome {
     }
 
     // 바구니에 항목 추가하기
-    public static void menuCartAddItem(BookList bookList) {
+    public static void menuCartAddItem(BookDAO bookList) {
         // 도서 목록 출력
         bookList.print();
 
         // 장바구니에 항목 추가
-        Scanner input = new Scanner(System.in);
         boolean quit = false;
         while (!quit) {
             // 구매할 도서 ID 입력
             System.out.print("장바구니에 추가할 도서의 ID를 입력하세요 :");
-            String str = input.next();
-            input.nextLine();
+            String str = input.nextLine();
 
             // 구매할 도서 ID에 대응되는 도서를 도서목록에서 검색
             Book book = bookList.findByBookId(str);
@@ -161,13 +145,12 @@ public class Welcome {
 
         while (true) {
             System.out.print("장바구니에서 삭제할 도서의 ID를 입력하세요 :");
-            Scanner input = new Scanner(System.in);
-            String str = input.next();
+            String str = input.nextLine();
 
             if (mCart.isCartInBook(str)) {
                 String bookId = str;
                 System.out.println("장바구니의 항목을 삭제하겠습니까? Y | N");
-                str = input.next();
+                str = input.nextLine();
 
                 if (str.equalsIgnoreCase("Y")) {
                     CartItem cartItem = mCart.getCartItem(bookId);
@@ -186,7 +169,6 @@ public class Welcome {
             System.out.println("장바구니에 항목이 없습니다.");
             return;
         }
-        Scanner input = new Scanner(System.in);
         System.out.println("배송받을 분은 고객 정보와 같습니까? Y | N");
         String str = input.nextLine();
 
@@ -203,6 +185,7 @@ public class Welcome {
         String phone = input.nextLine();
         System.out.print("배송받을 고객의 배송지를 입력하세요 ");
         String address = input.nextLine();
+
         printBill(name, phone, address);
     }
 
@@ -212,10 +195,10 @@ public class Welcome {
 
         String header = """
                 -------------배송받을 고객 정보---------------
-                고객명 : %s  \t\t연락처 : %s
+                고객명 : %s\t\t연락처 : %s
                 배송지 : %s\t\t발송일 : %s
                 """;
-        System.out.printf(header, name, phone, address, strDate);
+        System.out.printf(BILL_HEADER.getText(), name, phone, address, strDate);
 
         menuCartItemList();
 
@@ -223,7 +206,7 @@ public class Welcome {
                 \t\t\t주문 총금액 : %d원
                 -------------------------------------------
                 """;
-        System.out.printf(footer, mCart.calculateTotalPrice());
+        System.out.printf(BILL_FOOTER.getText(), mCart.calculateTotalPrice());
     }
 
     // 메뉴 종료
@@ -237,22 +220,20 @@ public class Welcome {
     }
 
     public static void menuAdminLogin() {
-        Scanner input = new Scanner(System.in);
         // 관리자 정보 입력 -> 관리자계정 로그인 시도
         System.out.println("관리자 정보를 입력하세요");
         System.out.print("아이디 : ");
-        String adminId = input.next();
+        String loginID = input.nextLine();
         System.out.print("비밀번호 : ");
-        String adminPW = input.next();
+        String adminPW = input.nextLine();
 
         // 현재 로그인을 시도한 사용자가 관리자라고 가정
         Admin admin = new Admin(mUser.getName(), mUser.getPhone());
 
         // 입력한 ID, 비밀번호가 관리자 계정과 일치하는지 확인
-        if (adminId.equals(admin.getId()) && adminPW.equals(admin.getPassword())) {
+        if (loginID.equals(admin.getId()) && adminPW.equals(admin.getPassword())) {
             // 일치하면 관리자의 인적사항을 모두 출력
-            System.out.printf("이름 %s   연락처 %s\n", admin.getName(), admin.getPhone());
-            System.out.printf("아이디 %s   비밀번호 %s\n", admin.getId(), admin.getPassword());
+            System.out.printf(ADMIN_INFO.getText(), admin.getName(), admin.getPhone(), admin.getId(), admin.getPassword());
             return;
         }
         System.out.println("관리자 정보가 일치하지 않습니다.");
