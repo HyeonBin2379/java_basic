@@ -1,12 +1,8 @@
-package boardtest;
+package boardtest.v0;
 
-import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.IntStream;
-import javabasic_02.day07.Book;
 
 public class BoardExample {
 
@@ -142,20 +138,21 @@ public class BoardExample {
         switch (menuNum) {
             case 1 -> update(board);
             case 2 -> delete(board);
-            case 3 -> {
-                return;
-            }
+            case 3 -> {}
             default -> System.out.println("1~3 사이의 숫자만 입력 가능합니다.");
         }
     }
+
     public void update(Board board) {
         System.out.println("[수정 내역 입력]");
         System.out.print("제목: ");
         String title = input.nextLine();
         input.reset();
+
         System.out.print("내용: ");
         String content = input.nextLine();
         input.reset();
+
         System.out.print("작성자: ");
         String writer = input.nextLine();
         input.reset();

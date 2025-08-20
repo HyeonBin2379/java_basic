@@ -1,4 +1,4 @@
-package boardtest;
+package boardtest.v0;
 
 import lombok.Getter;
 import lombok.Setter;
