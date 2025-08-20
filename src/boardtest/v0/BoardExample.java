@@ -47,15 +47,19 @@ public class BoardExample {
     }
 
     public void list() {
-        String listTitle = """
-                        [게시물 목록]
-                        ---------------------------------------------------------------
-                        no\t\twriter\t\tdate\t\ttitle
-                        ---------------------------------------------------------------
-                        %s
-                        ---------------------------------------------------------------
-                        """;
-        System.out.printf(listTitle, rendering());
+        String listFormat = """
+                
+                [게시글 목록]
+                %1$s
+                %2$s
+                %1$s
+                %3$s
+                %1$s
+                """;
+        System.out.printf(listFormat,
+                "-".repeat(60),
+                String.format("%-4s %-20s %-20s %-20s", "no", "writer", "date", "title"),
+                rendering());
         mainMenu();
     }
     private String rendering() {

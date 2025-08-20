@@ -1,7 +1,13 @@
-package boardtest.v1;
+package boardtest.v2;
+
+import boardtest.v2.common.BoardText;
+import boardtest.v2.common.ValidCheck;
+import boardtest.v2.exception.BoardException;
 
 import java.text.SimpleDateFormat;
 import java.util.*;
+
+import static boardtest.v2.common.BoardText.*;
 
 // 사용자가 현재 게시물 목록 열람 가능
 // 사용자는 메뉴를 선택하여 게시글 생성, 조회, 삭제 가능
@@ -12,6 +18,7 @@ public class BoardExample {
     private static final String checkNumberRegex = "[1-2]";
     private static final String readOptionRegex = "[1-3]";
 
+    private static ValidCheck validCheck = new ValidCheck();
     private static final Scanner scanner = new Scanner(System.in);
     private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
@@ -29,22 +36,12 @@ public class BoardExample {
 
     // 현재 게시판의 전체 게시글 목록을 출력 가능
     public void list() {
-        String listFormat = """
-                
-                [게시글 목록]
-                %1$s
-                %2$s
-                %1$s
-                %3$s
-                """;
-        String listTitle = String.format("%-4s %-20s %-20s %-20s", "no", "writer", "date", "title");
-
         // 게시판은 관리자 담당 -> 관리자로부터 게시판을 받아온다.
         // Manager에게 전체 게시물 목록을 요청
         Map<String, Board> boardMap = boardManager.getBoardMap();
         List<Board> boardList = new LinkedList<>(boardMap.values());
-
-        System.out.printf(listFormat, "-".repeat(60), listTitle, rendering(boardList));
+        String boardListData = rendering(boardList);
+        System.out.print(getBoardList(boardListData));
 
         mainMenu();
     }
@@ -60,13 +57,8 @@ public class BoardExample {
 
     // 메인 메뉴를 호출
     public void mainMenu() {
-        String mainMenu = """
-                    ----------------------------------------------------------
-                    메인메뉴 : 1. Create | 2. Read | 3. Clear | 4. Exit
-                    ----------------------------------------------------------
-                    """;
-        System.out.print(mainMenu);
-        System.out.print("메뉴 선택 : ");
+        System.out.println(getDecorated(BORDER_LINE, MAIN_MENU.getText()));
+        System.out.print(MENU_SELECT.getText());
     }
 
     // 게시물 메뉴 선택 기능
@@ -74,32 +66,33 @@ public class BoardExample {
         while (true) {
             list();
             // 외부에서 사용자가 입력한 데이터 타입은 항상 문자열
-            String input = scanner.nextLine();
+            try {
+                String menuNumber = scanner.nextLine();
 
-            if (input.equals("4")) {
-                System.out.println("\n게시판 종료");
-                break;
-            }
-            if (input.matches(menuNumberRegex)) {
-                switch (input) {
+                validCheck.isMenuValid(menuNumber);
+                if (menuNumber.equals("4")) {
+                    System.out.println(EXIT.getText());
+                    break;
+                }
+                switch (menuNumber) {
                     case "1" -> create();
                     case "2" -> read();
                     case "3" -> clear();
                 }
-            } else {
-                System.out.println("[1-4]번 번호를 입력하세요.");
+            } catch (BoardException e) {
+                System.out.println(e.getMessage());
             }
         }
     }
 
     // 새 글 작성 후 저장 기능 -> Map 컬렉션에 저장
-    public void create() {
-        System.out.println("\n[새 게시물 입력]");
-        System.out.print("제목: ");
+    public void create() throws BoardException {
+        System.out.println(CREATE.getText());
+        System.out.print(TITLE.getText());
         String title = scanner.nextLine();
-        System.out.print("내용: ");
+        System.out.print(BOARD.getText());
         String content = scanner.nextLine();
-        System.out.print("작성자: ");
+        System.out.print(WRITER.getText());
         String writer = scanner.nextLine();
 
         // 보조 메뉴 중 1번 선택 시
@@ -122,96 +115,74 @@ public class BoardExample {
 
     // 보조 메뉴 확인 및 선택 메서드
     private boolean checkMenu() {
-        System.out.println("-".repeat(60));
-        System.out.println("보조 메뉴: 1. Ok | 2. Cancel");
-
-        while (true) {
-            System.out.print("메뉴 선택: ");
-            String input = scanner.nextLine();
-
-            if (input.matches(checkNumberRegex)) {
-                return input.equals("1");
-            } else {
-                System.out.println("[1 or 2]번을 입력하세요.");
-            }
-        }
-    }
-
-    public void read() {
-        System.out.println("\n[게시물 읽기]");
+        System.out.print(BoardText.getSubMenu(CHECK_MENU));
         while (true) {
             try {
-                System.out.print("bno: ");
-                int numberInput = Integer.parseInt(scanner.nextLine());
+                System.out.print(MENU_SELECT.getText());
+                String menuNumber = scanner.nextLine();
 
-                Map<String, Board> boardMap = boardManager.getBoardMap();
-                if (boardMap.containsKey(Integer.toString(numberInput))) {
-                    Board board = boardMap.get(Integer.toString(numberInput));
-                    String boardInfo = """
-                            %1$s
-                            번호: %2$d
-                            제목: %3$s
-                            내용: %4$s
-                            작성자: %5$s
-                            날짜: %6$s
-                            %1$s
-                            """;
-                    System.out.printf(boardInfo, "#".repeat(30), board.getBno(), board.getBTitle(), board.getBContent(), board.getBWriter(), dateFormat.format(board.getBDate()));
+                validCheck.isCheckMenuValid(menuNumber);
 
-                    readOption(board.getBno());
-                    break;
-                } else {
-                    throw new IllegalArgumentException("해당 게시물은 존재하지 않습니다.");
-                }
-            } catch (IllegalArgumentException | InputMismatchException e) {
+                return menuNumber.equals("1");
+            } catch (BoardException e) {
                 System.out.println(e.getMessage());
             }
         }
     }
 
-    public void readOption(int bno) {
-        System.out.println("-".repeat(60));
-        System.out.println("보조 메뉴: 1. Update | 2. Delete | 3. List");
-
+    public void read() throws BoardException {
+        System.out.println(READ.getText());
         while (true) {
-            System.out.print("메뉴 선택: ");
-            String input = scanner.nextLine();
+            try {
+                System.out.print(BNO.getText());
+                String numberInput = scanner.nextLine();
 
-            if (input.matches(readOptionRegex)) {
-                switch (input) {
-                    case "1":
-                        update(bno);
-                        break;
-                    case "2":
-                        delete(bno);
-                        break;
-                    case "3":
-                        break;
-                }
+                Map<String, Board> boardMap = boardManager.getBoardMap();
+                validCheck.isValidBoardNumber(numberInput, boardMap::containsKey);
+
+                Board board = boardMap.get(numberInput);
+                System.out.println(BoardText.getReadInfo(board));
+
+                readOption(board.getBno());
                 return;
-            } else {
-                System.out.println("[1-3]번을 입력하세요.");
+            } catch (BoardException e) {
+                System.out.println(e.getMessage());
             }
         }
     }
 
-    public void update(int bno) {
-        System.out.println("\n[수정 내용 입력]");
-        System.out.print("제목: ");
+    public void readOption(int bno) throws BoardException {
+        System.out.print(BoardText.getSubMenu(READ_CHECK_MENU));
+        System.out.print(MENU_SELECT.getText());
+        String menuNumber = scanner.nextLine();
+
+        validCheck.isReadOptionMenuValid(menuNumber);
+        if (menuNumber.equals("3")) {
+            return;
+        }
+        switch (menuNumber) {
+            case "1" -> update(bno);
+            case "2" -> delete(bno);
+        }
+    }
+
+    public void update(int bno) throws BoardException {
+        System.out.println(UPDATE.getText());
+        System.out.print(TITLE.getText());
         String title = scanner.nextLine();
-        System.out.print("내용: ");
+        System.out.print(BOARD.getText());
         String content = scanner.nextLine();
-        System.out.print("작성자: ");
+        System.out.print(WRITER.getText());
         String writer = scanner.nextLine();
 
+        // 이미 read()에서 bno에 대응되는 Board의 존재 여부에 관한 유효성 검사를 수행
+        Map<String, Board> boardMap = boardManager.getBoardMap();
+        Board board = boardMap.get(Integer.toString(bno));
+        board.setBTitle(title);
+        board.setBContent(content);
+        board.setBWriter(writer);
+
         if (checkMenu()) {
-            Map<String, Board> boardMap = boardManager.getBoardMap();
-            Board board = boardMap.get(Integer.toString(bno));
-
-            board.setBTitle(title);
-            board.setBContent(content);
-            board.setBWriter(writer);
-
             boardMap.replace(Integer.toString(board.getBno()), board);
             boardManager.setBoardMap(boardMap);
         }
@@ -225,7 +196,7 @@ public class BoardExample {
     }
 
     public void clear() {
-        System.out.println("\n[게시물 전체 삭제]");
+        System.out.println(CLEAR.getText());
         Map<String, Board> boardMap = boardManager.getBoardMap();
 
         if (boardMap.isEmpty()) {
