@@ -3,7 +3,7 @@ package bookproject.com.market.v1.main;
 import static bookproject.com.market.v1.common.BookMarketText.*;
 
 import bookproject.com.market.v1.bookitem.Book;
-import bookproject.com.market.v1.bookitem.BookList;
+import bookproject.com.market.v1.bookitem.BookManager;
 import bookproject.com.market.v1.cart.Cart;
 import bookproject.com.market.v1.cart.CartItem;
 import bookproject.com.market.v1.member.Admin;
@@ -21,12 +21,18 @@ public class Welcome {
             "ISBN1235 | 안드로이드 프로그래밍 | 33000 | 우재남 | 실습 단계별 명쾌한 멘토링! | IT전문서 | 2022/01/22",
             "ISBN1236 | 안드로이드 프로그래밍 | 33000 | 고광일 | 컴퓨팅 사고력을 키우는 블록 코딩 | 컴퓨터입문 | 2019/06/10"
     );
+
     private static final Scanner input = new Scanner(System.in);
     private static final Cart mCart = new Cart();
-    private static final BookList mBookList = new BookList(tuples);
-
     private static boolean isRunning;
-    private static User mUser;
+
+    private final BookManager mBookManager;
+    private User mUser;
+
+    public Welcome(BookManager mBookManager) {
+        this.mBookManager = mBookManager;
+        this.mBookManager.setBookData(tuples);
+    }
 
     public void run() {
         // 현재 사용자의 이름과 연락처 입력 -> 사용자 객체 생성
@@ -52,7 +58,7 @@ public class Welcome {
                 case 1 -> menuGuestInfo(userName, userMobile);
                 case 2 -> menuCartItemList();
                 case 3 -> menuCartClear();
-                case 4 -> menuCartAddItem(mBookList);
+                case 4 -> menuCartAddItem(mBookManager);
                 case 5 -> menuCartRemoveItemCount();
                 case 6 -> menuCartRemoveItem();
                 case 7 -> menuCartBill();
@@ -96,45 +102,71 @@ public class Welcome {
     }
 
     // 바구니에 항목 추가하기
-    public void menuCartAddItem(BookList bookList) {
+    public void menuCartAddItem(BookManager bookManager) {
         // 도서 목록 출력
-        bookList.print();
+        mCart.printBookList(bookManager.getBookList());
 
         // 장바구니에 항목 추가
         while (true) {
             // 구매할 도서 ID 입력
             System.out.print("장바구니에 추가할 도서의 ID를 입력하세요 :");
-            String str = input.nextLine();
-
+            String bookID = input.nextLine();
             // 구매할 도서 ID에 대응되는 도서를 도서목록에서 검색
-            Book book = bookList.findByBookId(str);
+            Book book = bookManager.getBook(bookID);
 
             // 구매할 도서가 도서목록에 없음
             if (book == null) {
                 System.out.println("다시 입력해 주세요");
                 continue;
             }
+
             // 구매하려는 도서가 도서목록에 존재
             System.out.println("장바구니에 추가하겠습니까? Y | N ");
-            str = input.nextLine();
+            String option = input.nextLine();
 
             // 선택한 도서가 장바구니에 있다면, 찾은 도서를 구매대상으로 선택
-            if (str.equalsIgnoreCase("Y")) {
+            if (option.equalsIgnoreCase("Y")) {
                 if (!isCartInBook(book.getBookId())) {
                     mCart.insertBook(book);
-                    System.out.println(book.getBookId() + " 도서가 장바구니에 추가되었습니다.");
                 } else {
                     CartItem cartItem = mCart.getCartItem(book.getBookId());
+                    int index = mCart.indexOf(cartItem);
+
                     cartItem.setQuantity(cartItem.getQuantity()+1);
+                    mCart.updateCart(index, cartItem);
                 }
-                return;
+                System.out.println(book.getBookId() + " 도서가 장바구니에 추가되었습니다.");
             }
+            return;
         }
     }
 
     // 장바구니 항목 수량 줄이기
     public void menuCartRemoveItemCount() {
-        System.out.println("5. 장바구니의 항목 수량 줄이기");
+        while (true) {
+            System.out.print("장바구니에서 수량을 줄일 도서의 ID를 입력하세요 :");
+            String bookID = input.nextLine();
+            System.out.print("장바구니 항목에서 줄일 도서의 수량을 입력하세요 :");
+            int quantity = Integer.parseInt(input.nextLine());
+
+            if (mCart.isCartInBook(bookID)) {
+                CartItem cartItem = mCart.getCartItem(bookID);
+
+                if (cartItem.getQuantity() < quantity) {
+                    System.out.println(cartItem.getBookID() + "의 수량을 더 이상 줄일 수 없습니다.");
+                    continue;
+                }
+                System.out.println("장바구니 항목의 수량을 줄이겠습니까? Y | N");
+                String option = input.nextLine();
+
+                if (option.equalsIgnoreCase("Y")) {
+                    int index = mCart.indexOf(cartItem);
+                    cartItem.setQuantity(cartItem.getQuantity()-quantity);
+                    mCart.updateCart(index, cartItem);
+                }
+                return;
+            }
+        }
     }
 
     // 장바구니 항목 삭제하기
@@ -146,16 +178,15 @@ public class Welcome {
         menuCartItemList();
         while (true) {
             System.out.print("장바구니에서 삭제할 도서의 ID를 입력하세요 :");
-            String str = input.nextLine();
+            String bookID = input.nextLine();
 
-            if (mCart.isCartInBook(str)) {
-                String bookId = str;
+            if (mCart.isCartInBook(bookID)) {
                 System.out.println("장바구니의 항목을 삭제하겠습니까? Y | N");
-                str = input.nextLine();
+                String option = input.nextLine();
 
-                if (str.equalsIgnoreCase("Y")) {
-                    CartItem cartItem = mCart.getCartItem(bookId);
-                    mCart.removeCart(cartItem);
+                if (option.equalsIgnoreCase("Y")) {
+                    CartItem cartItem = mCart.getCartItem(bookID);
+                    mCart.removeCart(mCart.indexOf(cartItem));
                     System.out.println(cartItem.getBookID() + " 장바구니에서 도서가 삭제되었습니다.");
                 }
                 return;
@@ -171,9 +202,9 @@ public class Welcome {
             return;
         }
         System.out.println("배송받을 분은 고객 정보와 같습니까? Y | N");
-        String str = input.nextLine();
+        String option = input.nextLine();
 
-        if (str.equalsIgnoreCase("Y")) {
+        if (option.equalsIgnoreCase("Y")) {
             System.out.print("배송지를 입력해주세요 ");
             String address = input.nextLine();
             printBill(mUser.getName(), mUser.getPhone(), address);
@@ -197,7 +228,8 @@ public class Welcome {
 
         menuCartItemList();
 
-        System.out.printf(BILL_FOOTER.getText(), mCart.calculateTotalPrice());
+        int totalPrice = mCart.calculateTotalPrice();
+        System.out.printf(BILL_FOOTER.getText(), totalPrice);
     }
 
     // 메뉴 종료

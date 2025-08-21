@@ -20,8 +20,7 @@ public enum BookMarketText {
                 장바구니 상품 목록 :
                 ----------------------------------------
                     도서ID\t\t|    수량  \t|    합계
-                %s
-                ----------------------------------------
+                %s----------------------------------------
                 """),
     CART_ITEM("    %-8s\t|     %-4s\t|    %s\n"),
     USER_INFO("""
@@ -52,7 +51,7 @@ public enum BookMarketText {
         return text;
     }
 
-    public static String getItem(CartItem cartItem) {
+    public static String getInfo(CartItem cartItem) {
         return String.format(CART_ITEM.text, cartItem.getBookID(), cartItem.getQuantity(), cartItem.getTotalPrice());
     }
 }

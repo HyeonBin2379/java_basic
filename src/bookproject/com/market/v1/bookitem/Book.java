@@ -9,6 +9,10 @@ public class Book extends Item {
     private String category;
     private String releaseDate;
 
+    public Book() {
+        super(null, null, 0);
+    }
+
     public Book(String bookId, String name, int unitPrice) {
         super(bookId, name, unitPrice);
     }
