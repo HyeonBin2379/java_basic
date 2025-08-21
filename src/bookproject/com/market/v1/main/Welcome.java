@@ -28,7 +28,7 @@ public class Welcome {
     private static boolean isRunning;
     private static User mUser;
 
-    public static void main(String[] args) {
+    public void run() {
         // 현재 사용자의 이름과 연락처 입력 -> 사용자 객체 생성
         System.out.print("당신의 이름을 입력하세요. : ");
         String userName = input.nextLine();
@@ -63,23 +63,23 @@ public class Welcome {
     }
 
     // 선택 가능한 메뉴 목록 출력
-    public static void menuIntroduction() {
+    public void menuIntroduction() {
         System.out.println(MENU.getText());
     }
 
     // 사용자 정보 출력하기
-    public static void menuGuestInfo(String name, String mobile) {
+    public void menuGuestInfo(String name, String mobile) {
         // 이름 길이에 관계없이 정렬 형식을 유지하도록 출력
         System.out.printf(USER_INFO.getText(), name, mobile);
     }
 
     // 장바구니 상품 목록 보기
-    public static void menuCartItemList() {
+    public void menuCartItemList() {
         mCart.printCart();
     }
 
     // 장바구니 비우기
-    public static void menuCartClear() {
+    public void menuCartClear() {
         // 장바구니가 빈 경우
         if (mCart.isCartEmpty()) {
             System.out.println("장바구니의 항목이 없습니다.");
@@ -96,13 +96,12 @@ public class Welcome {
     }
 
     // 바구니에 항목 추가하기
-    public static void menuCartAddItem(BookList bookList) {
+    public void menuCartAddItem(BookList bookList) {
         // 도서 목록 출력
         bookList.print();
 
         // 장바구니에 항목 추가
-        boolean quit = false;
-        while (!quit) {
+        while (true) {
             // 구매할 도서 ID 입력
             System.out.print("장바구니에 추가할 도서의 ID를 입력하세요 :");
             String str = input.nextLine();
@@ -120,28 +119,31 @@ public class Welcome {
             str = input.nextLine();
 
             // 선택한 도서가 장바구니에 있다면, 찾은 도서를 구매대상으로 선택
-            if (str.equalsIgnoreCase("Y")
-                    && !isCartInBook(book.getBookId())) {
-                mCart.insertBook(book);
-                System.out.println(book.getBookId() + " 도서가 장바구니에 추가되었습니다.");
-                quit = true;
+            if (str.equalsIgnoreCase("Y")) {
+                if (!isCartInBook(book.getBookId())) {
+                    mCart.insertBook(book);
+                    System.out.println(book.getBookId() + " 도서가 장바구니에 추가되었습니다.");
+                } else {
+                    CartItem cartItem = mCart.getCartItem(book.getBookId());
+                    cartItem.setQuantity(cartItem.getQuantity()+1);
+                }
+                return;
             }
         }
     }
 
     // 장바구니 항목 수량 줄이기
-    public static void menuCartRemoveItemCount() {
-        System.out.println("5. 장바구니의 항목 수량 수정");
+    public void menuCartRemoveItemCount() {
+        System.out.println("5. 장바구니의 항목 수량 줄이기");
     }
 
     // 장바구니 항목 삭제하기
-    public static void menuCartRemoveItem() {
+    public void menuCartRemoveItem() {
         if (mCart.isCartEmpty()) {
             System.out.println("장바구니에 항목이 없습니다.");
             return;
         }
         menuCartItemList();
-
         while (true) {
             System.out.print("장바구니에서 삭제할 도서의 ID를 입력하세요 :");
             String str = input.nextLine();
@@ -163,7 +165,7 @@ public class Welcome {
     }
 
     // 영수증 표시하기
-    public static void menuCartBill() {
+    public void menuCartBill() {
         if (mCart.isCartEmpty()) {
             System.out.println("장바구니에 항목이 없습니다.");
             return;
@@ -188,7 +190,7 @@ public class Welcome {
         printBill(name, phone, address);
     }
 
-    public static void printBill(String name, String phone, String address) {
+    public void printBill(String name, String phone, String address) {
         LocalDate today = LocalDate.now();
         String strDate = today.format(DateTimeFormatter.ofPattern("MM/dd/yyyy"));
         System.out.printf(BILL_HEADER.getText(), name, phone, address, strDate);
@@ -199,28 +201,28 @@ public class Welcome {
     }
 
     // 메뉴 종료
-    public static void menuExit() {
+    public void menuExit() {
         System.out.println("프로그램을 종료합니다.");
         isRunning = false;
     }
 
-    public static boolean isCartInBook(String bookId) {
+    public boolean isCartInBook(String bookId) {
         return mCart.isCartInBook(bookId);
     }
 
-    public static void menuAdminLogin() {
+    public void menuAdminLogin() {
         // 관리자 정보 입력 -> 관리자계정 로그인 시도
         System.out.println("관리자 정보를 입력하세요");
         System.out.print("아이디 : ");
         String loginID = input.nextLine();
         System.out.print("비밀번호 : ");
-        String adminPW = input.nextLine();
+        String loginPW = input.nextLine();
 
         // 현재 로그인을 시도한 사용자가 관리자라고 가정
         Admin admin = new Admin(mUser.getName(), mUser.getPhone());
 
         // 입력한 ID, 비밀번호가 관리자 계정과 일치하는지 확인
-        if (loginID.equals(admin.getId()) && adminPW.equals(admin.getPassword())) {
+        if (loginID.equals(admin.getId()) && loginPW.equals(admin.getPassword())) {
             // 일치하면 관리자의 인적사항을 모두 출력
             System.out.printf(ADMIN_INFO.getText(), admin.getName(), admin.getPhone(), admin.getId(), admin.getPassword());
             return;

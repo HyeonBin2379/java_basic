@@ -23,7 +23,7 @@ public class Cart implements CartInterface {
 
     @Override
     public boolean isCartInBook(String id) {
-        return this.indexOf(id) != -1;
+        return mCartItem.stream().anyMatch(cartItem -> id.equals(cartItem.getBookID()));
     }
 
     @Override
@@ -48,15 +48,10 @@ public class Cart implements CartInterface {
     }
 
     public CartItem getCartItem(String bookID) {
-        return mCartItem.get(indexOf(bookID));
-    }
-
-    public int indexOf(String bookID) {
         return mCartItem.stream()
                 .filter(cartItem -> bookID.equals(cartItem.getBookID()))
-                .findFirst()
-                .map(mCartItem::indexOf)
-                .orElse(-1);
+                .findAny()
+                .orElse(null);
     }
 
     public void printCart() {
