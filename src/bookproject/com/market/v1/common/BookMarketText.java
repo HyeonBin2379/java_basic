@@ -1,4 +1,4 @@
-package bookproject.com.market.common;
+package bookproject.com.market.v1.common;
 
 public enum BookMarketText {
 

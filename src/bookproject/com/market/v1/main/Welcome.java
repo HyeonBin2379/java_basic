@@ -1,9 +1,9 @@
 package bookproject.com.market.v1.main;
 
-import static bookproject.com.market.common.BookMarketText.*;
+import static bookproject.com.market.v1.common.BookMarketText.*;
 
 import bookproject.com.market.v1.bookitem.Book;
-import bookproject.com.market.v1.bookitem.BookDAO;
+import bookproject.com.market.v1.bookitem.BookList;
 import bookproject.com.market.v1.cart.Cart;
 import bookproject.com.market.v1.cart.CartItem;
 import bookproject.com.market.v1.member.Admin;
@@ -24,7 +24,7 @@ public class Welcome {
     );
     private static final Scanner input = new Scanner(System.in);
     private static final Cart mCart = new Cart();
-    private static final BookDAO mBookList = new BookDAO(tuples);
+    private static final BookList mBookList = new BookList(tuples);
 
     private static boolean isRunning;
     private static User mUser;
@@ -97,7 +97,7 @@ public class Welcome {
     }
 
     // 바구니에 항목 추가하기
-    public static void menuCartAddItem(BookDAO bookList) {
+    public static void menuCartAddItem(BookList bookList) {
         // 도서 목록 출력
         bookList.print();
 
@@ -192,20 +192,10 @@ public class Welcome {
     public static void printBill(String name, String phone, String address) {
         LocalDate today = LocalDate.now();
         String strDate = today.format(DateTimeFormatter.ofPattern("MM/dd/yyyy"));
-
-        String header = """
-                -------------배송받을 고객 정보---------------
-                고객명 : %s\t\t연락처 : %s
-                배송지 : %s\t\t발송일 : %s
-                """;
         System.out.printf(BILL_HEADER.getText(), name, phone, address, strDate);
 
         menuCartItemList();
 
-        String footer = """
-                \t\t\t주문 총금액 : %d원
-                -------------------------------------------
-                """;
         System.out.printf(BILL_FOOTER.getText(), mCart.calculateTotalPrice());
     }
 

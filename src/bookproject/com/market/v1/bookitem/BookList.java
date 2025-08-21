@@ -4,11 +4,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class BookDAO {
+public class BookList {
 
     private final List<Book> bookList;
 
-    public BookDAO(List<String> tuples) {
+    public BookList(List<String> tuples) {
         this.bookList = new ArrayList<>();
         createBookList(tuples);
     }
