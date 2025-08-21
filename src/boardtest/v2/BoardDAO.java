@@ -12,11 +12,10 @@ import java.util.*;
 // 사용자는 게시판 프로그램을 종료 가능
 public class BoardDAO {
 
-    private static ValidCheck validCheck = new ValidCheck();
-    private static final Scanner scanner = new Scanner(System.in);
-    private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-
     // scanner 객체는 이 클래스의 모든 인스턴스가 공용으로 사용 가능
+    private static final Scanner scanner = new Scanner(System.in);
+    private static final ValidCheck validCheck = new ValidCheck();
+
     private static int bno = 1;     // 공용 변수
 
     // BoardManager가 게시판을 관리
@@ -25,6 +24,7 @@ public class BoardDAO {
     public BoardDAO() {
     }
     public BoardDAO(BoardManager boardManager) {
+        this();
         this.boardManager = boardManager;
     }
 
