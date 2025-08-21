@@ -1,0 +1,33 @@
+1.
+답: 4
+
+2.
+답: 2
+
+3.
+답: 4
+
+4.
+답: 3
+
+5.
+작성 코드:
+```
+.filter(word -> word.toLowerCase().contains("java"))
+.forEach(System.out::println);
+```
+
+6.
+작성 코드:
+```
+.mapToInt(member -> member.getAge())
+.average()
+.getAsDouble();
+```
+
+7.
+작성 코드:
+```
+.filter(member -> member.getJob().equals("개발자"))
+.collect(Collectors.toList());
+```
