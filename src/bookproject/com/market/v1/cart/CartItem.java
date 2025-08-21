@@ -57,11 +57,4 @@ public class CartItem {
 	public void updateTotalPrice() {
 		totalPrice = itemBook.getUnitPrice() * this.quantity;
 	}
-
-	@Override
-	public String toString() {
-		List<String> fields = List.of(bookID, Integer.toString(quantity), Integer.toString(totalPrice));
-
-		return String.join("\t|    ", fields);
-	}
 }

@@ -16,7 +16,6 @@ import java.util.Scanner;
 
 public class Welcome {
 
-    // 각 메뉴별 명칭에 관계없이 좌우 정렬을 유지하도록 출력
     private static final List<String> tuples = Arrays.asList(
             "ISBN1234 | 쉽게 배우는 JSP 웹 프로그래밍 | 27000 | 송미영 | 단계별로 쇼핑몰을 구현하며 배우는 JSP 웹 프로그래밍 | IT전문서 | 2018/10/08",
             "ISBN1235 | 안드로이드 프로그래밍 | 33000 | 우재남 | 실습 단계별 명쾌한 멘토링! | IT전문서 | 2022/01/22",

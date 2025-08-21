@@ -1,8 +1,12 @@
 package bookproject.com.market.v1.cart;
 
 import bookproject.com.market.v1.bookitem.Book;
+import bookproject.com.market.v1.common.BookMarketText;
+
 import java.util.ArrayList;
 import java.util.List;
+
+import static bookproject.com.market.v1.common.BookMarketText.*;
 
 public class Cart implements CartInterface {
 
@@ -56,11 +60,11 @@ public class Cart implements CartInterface {
     }
 
     public void printCart() {
-        System.out.printf(FORMAT, rendering());
+        System.out.printf(CART_LAYOUT.getText(), rendering());
     }
     private String rendering() {
         StringBuilder sb = new StringBuilder();
-        mCartItem.forEach(cartItem -> sb.append("    ").append(cartItem).append("\n"));
+        mCartItem.forEach(cartItem -> sb.append(BookMarketText.getItem(cartItem)));
         return sb.toString();
     }
 
