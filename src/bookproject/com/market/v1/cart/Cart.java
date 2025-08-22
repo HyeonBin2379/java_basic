@@ -32,7 +32,7 @@ public class Cart implements CartInterface {
 
     @Override
     public void insertBook(Book book) {
-        CartItem newCartItem = new CartItem();
+        CartItem newCartItem = new CartItem(book);
         mCartItem.add(newCartItem);
     }
 
