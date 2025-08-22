@@ -34,11 +34,8 @@ public class BookManager {
     }
 
     public void insertBook(List<String> attributes) {
-        Book newBook = new Book();
+        Book newBook = new Book(attributes.get(0), attributes.get(1), Integer.parseInt(attributes.get(2)));
 
-        newBook.setBookId(attributes.get(0));
-        newBook.setName(attributes.get(1));
-        newBook.setUnitPrice(Integer.getInteger(attributes.get(2)));
         newBook.setAuthor(attributes.get(3));
         newBook.setDescription(attributes.get(4));
         newBook.setCategory(attributes.get(5));
