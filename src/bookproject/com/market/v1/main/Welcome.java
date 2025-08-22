@@ -6,6 +6,7 @@ import bookproject.com.market.v1.bookitem.Book;
 import bookproject.com.market.v1.bookitem.BookManager;
 import bookproject.com.market.v1.cart.Cart;
 import bookproject.com.market.v1.cart.CartItem;
+import bookproject.com.market.v1.common.BookMarketText;
 import bookproject.com.market.v1.member.Admin;
 import bookproject.com.market.v1.member.User;
 import java.time.LocalDate;
@@ -92,13 +93,16 @@ public class Welcome {
             return;
         }
         // 장바구니의 모든 항목 삭제
-        System.out.println("장바구니의 모든 항목을 삭제하겠습니까? Y | N");
-        String str = input.nextLine();
-
-        if (str.equalsIgnoreCase("Y")) {
+        if (checkYesOrNo(CLEAR_CART)) {
             mCart.deleteBook();
             System.out.println("장바구니의 모든 항목을 삭제했습니다.");
         }
+    }
+
+    private boolean checkYesOrNo(BookMarketText msg) {
+        System.out.printf(CHECK_MENU.getText(), msg.getText());
+        String yesOrElse = input.nextLine();
+        return yesOrElse.equalsIgnoreCase("Y");
     }
 
     // 바구니에 항목 추가하기
@@ -114,30 +118,16 @@ public class Welcome {
             // 구매할 도서 ID에 대응되는 도서를 도서목록에서 검색
             Book book = bookManager.getBook(bookID);
 
-            // 구매할 도서가 도서목록에 없음
-            if (book == null) {
-                System.out.println("다시 입력해 주세요");
-                continue;
-            }
-
-            // 구매하려는 도서가 도서목록에 존재
-            System.out.println("장바구니에 추가하겠습니까? Y | N ");
-            String option = input.nextLine();
-
-            if (option.equalsIgnoreCase("Y")) {
-                // 선택한 도서가 장바구니에 있다면, 찾은 도서를 구매대상으로 선택
-                if (!isCartInBook(book.getBookId())) {
+            // 구매할 도서가 도서목록에 존재
+            if (book != null) {
+                if (checkYesOrNo(ADD_CART)) {
+                    // 선택한 도서를 구매대상으로 선택
                     mCart.insertBook(book);
-                } else {
-                    CartItem cartItem = mCart.getCartItem(book.getBookId());
-                    int index = mCart.indexOf(cartItem);
-
-                    cartItem.setQuantity(cartItem.getQuantity()+1);
-                    mCart.updateCart(index, cartItem);
+                    System.out.println(book.getBookId() + " 도서가 장바구니에 추가되었습니다.");
                 }
-                System.out.println(book.getBookId() + " 도서가 장바구니에 추가되었습니다.");
+                return;
             }
-            return;
+            System.out.println("다시 입력해 주세요");
         }
     }
 
@@ -156,10 +146,7 @@ public class Welcome {
                     System.out.println(cartItem.getBookID() + "의 수량을 더 이상 줄일 수 없습니다.");
                     continue;
                 }
-                System.out.println("장바구니 항목의 수량을 줄이겠습니까? Y | N");
-                String option = input.nextLine();
-
-                if (option.equalsIgnoreCase("Y")) {
+                if (checkYesOrNo(REMOVE_ITEM_COUNT)) {
                     int index = mCart.indexOf(cartItem);
                     cartItem.setQuantity(cartItem.getQuantity()-quantity);
                     mCart.updateCart(index, cartItem);
@@ -181,10 +168,7 @@ public class Welcome {
             String bookID = input.nextLine();
 
             if (mCart.isCartInBook(bookID)) {
-                System.out.println("장바구니의 항목을 삭제하겠습니까? Y | N");
-                String option = input.nextLine();
-
-                if (option.equalsIgnoreCase("Y")) {
+                if (checkYesOrNo(DELETE_CART_ITEM)) {
                     CartItem cartItem = mCart.getCartItem(bookID);
                     mCart.removeCart(mCart.indexOf(cartItem));
                     System.out.println(cartItem.getBookID() + " 장바구니에서 도서가 삭제되었습니다.");
@@ -201,10 +185,7 @@ public class Welcome {
             System.out.println("장바구니에 항목이 없습니다.");
             return;
         }
-        System.out.println("배송받을 분은 고객 정보와 같습니까? Y | N");
-        String option = input.nextLine();
-
-        if (option.equalsIgnoreCase("Y")) {
+        if (checkYesOrNo(IS_SAME_USER)) {
             System.out.print("배송지를 입력해주세요 ");
             String address = input.nextLine();
             printBill(mUser.getName(), mUser.getPhone(), address);

@@ -32,8 +32,17 @@ public class Cart implements CartInterface {
 
     @Override
     public void insertBook(Book book) {
-        CartItem newCartItem = new CartItem(book);
-        mCartItem.add(newCartItem);
+        if (!this.isCartInBook(book.getBookId())) {
+            CartItem newCartItem = new CartItem(book);
+            mCartItem.add(newCartItem);
+        } else {
+            // 이미 장바구니에 담은 도서라면 수량만 증가
+            CartItem cartItem = this.getCartItem(book.getBookId());
+            int index = mCartItem.indexOf(cartItem);
+
+            cartItem.setQuantity(cartItem.getQuantity()+1);
+            updateCart(index, cartItem);
+        }
     }
 
     @Override
@@ -61,6 +70,7 @@ public class Cart implements CartInterface {
         // 장바구니 항목의 갱신된 수량이 0개면 삭제
         if (cartItem.getQuantity() == 0) {
             mCartItem.remove(index);
+            return;
         }
         mCartItem.set(index, cartItem);
     }
@@ -72,7 +82,7 @@ public class Cart implements CartInterface {
         StringBuilder sb = new StringBuilder();
         mCartItem.stream()
                 .sorted(Comparator.comparing(CartItem::getBookID))
-                .forEach(cartItem -> sb.append(BookMarketText.getInfo(cartItem)));
+                .forEach(cartItem -> sb.append(BookMarketText.getCartInfo(cartItem)));
         return sb.toString();
     }
 

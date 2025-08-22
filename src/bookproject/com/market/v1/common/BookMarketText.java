@@ -39,7 +39,16 @@ public enum BookMarketText {
     BILL_FOOTER("""
                 \t\t\t주문 총금액 : %d원
                 -------------------------------------------
-                """);
+                """),
+
+    // 예/아니오 체크용 보조 메뉴
+    CHECK_MENU("%s Y | N\n"),
+    ADD_CART("장바구니에 추가하겠습니까?"),
+    CLEAR_CART("장바구니의 모든 항목을 삭제하겠습니까?"),
+    REMOVE_ITEM_COUNT("장바구니 항목의 수량을 줄이겠습니까?"),
+    DELETE_CART_ITEM("장바구니의 항목을 삭제하겠습니까?"),
+    IS_SAME_USER("배송받을 분은 고객 정보와 같습니까?");
+
 
     private final String text;
 
@@ -51,7 +60,7 @@ public enum BookMarketText {
         return text;
     }
 
-    public static String getInfo(CartItem cartItem) {
+    public static String getCartInfo(CartItem cartItem) {
         return String.format(CART_ITEM.text, cartItem.getBookID(), cartItem.getQuantity(), cartItem.getTotalPrice());
     }
 }
