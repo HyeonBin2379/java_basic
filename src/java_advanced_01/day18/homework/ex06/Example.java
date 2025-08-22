@@ -13,7 +13,7 @@ public class Example {
         );
 
         double avg = list.stream()
-                .mapToInt(member -> member.getAge())
+                .mapToInt(Member::getAge)
                 .average()
                 .getAsDouble();
         System.out.println("평균 나이: " + avg);

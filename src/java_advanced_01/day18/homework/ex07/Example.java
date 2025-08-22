@@ -16,8 +16,9 @@ public class Example {
         List<Member> developers = list.stream()
                 .filter(member -> member.getJob().equals("개발자"))
                 .collect(Collectors.toList());
-        developers
-                .stream()
-                .forEach(m -> System.out.println(m.getName()));
+        // 리스트의 데이터를 스트림으로 추출하여 출력
+        developers.stream()
+                .map(Member::getName)
+                .forEach(System.out::println);
     }
 }

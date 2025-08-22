@@ -124,8 +124,8 @@ public class Welcome {
             System.out.println("장바구니에 추가하겠습니까? Y | N ");
             String option = input.nextLine();
 
-            // 선택한 도서가 장바구니에 있다면, 찾은 도서를 구매대상으로 선택
             if (option.equalsIgnoreCase("Y")) {
+                // 선택한 도서가 장바구니에 있다면, 찾은 도서를 구매대상으로 선택
                 if (!isCartInBook(book.getBookId())) {
                     mCart.insertBook(book);
                 } else {
