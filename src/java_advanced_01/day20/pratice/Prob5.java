@@ -15,7 +15,7 @@ public class Prob5 {
             if (data == -1) {
                 break;
             }
-            System.out.print((byte)data);
+            System.out.print((char)data);
         }
         is.close();
     }

@@ -10,12 +10,10 @@ public class Prob10 {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream("C:/Temp/keyboard.txt"));
 
-        while (true) {
-            String input = br.readLine();
-            if (input.equals("exit")) {
-                break;
-            }
-            bos.write(input.getBytes());
+        String line;
+        while (!(line = br.readLine()).equals("exit")) {
+            bos.write(line.getBytes());
+            bos.write(System.lineSeparator().getBytes());
         }
         bos.flush();
 

@@ -7,18 +7,23 @@ import java.io.*;
 public class Prob7 {
 
     public static void main(String[] args) throws IOException {
-        InputStream is = new FileInputStream("C:/Temp/copy.jpg");
-        int totalSize = 0;
-        byte[] buf = new byte[is.available()];
+//        InputStream is = new FileInputStream("C:/Temp/copy.jpg");
+//        int totalSize = 0;
+//        byte[] buf = new byte[is.available()];
+//
+//        while (true) {
+//            int byteCnt = is.read(buf);
+//            if (byteCnt == -1) {
+//                break;
+//            }
+//            totalSize += byteCnt;
+//        }
+//        System.out.println(totalSize);
+//        is.close();
 
-        while (true) {
-            int byteCnt = is.read(buf);
-            if (byteCnt == -1) {
-                break;
-            }
-            totalSize += byteCnt;
-        }
-        System.out.println(totalSize);
-        is.close();
+        // 파일명만 기입할 시, 워킹 디렉터리는 현재 프로젝트 파일의 경로로 자동 설정
+        // ex: new File("copy.jpg") -> 실제 파일 경로는 C:/study/java_basic/copy.jpg
+        File file = new File("C:/Temp/copy.jpg");
+        System.out.println(file.length() + "bytes");
     }
 }

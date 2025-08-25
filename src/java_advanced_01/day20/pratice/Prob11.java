@@ -9,30 +9,21 @@ import java.io.*;
 public class Prob11 {
 
     public static void main(String[] args) throws IOException {
-        BufferedReader cmdBr = new BufferedReader(new InputStreamReader(System.in));
-        String cmd = cmdBr.readLine();
-
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        BufferedWriter bw;
 
-        String input;
-        switch (cmd) {
-            case "append":
-                bw = new BufferedWriter(new FileWriter("C:/Temp/memo.txt", true));
-                input = br.readLine();
-                bw.write(input);
-                bw.flush();
-                bw.close();
-                break;
-            case "overwrite":
-                bw = new BufferedWriter(new FileWriter("C:/Temp/memo.txt", false));
-                input = br.readLine();
-                bw.write(input);
-                bw.flush();
-                bw.close();
-                break;
+        System.out.print("쓰기 모드 선택 (append / overwrite): ");
+        String mode = br.readLine();
+        boolean append = mode.equalsIgnoreCase("append");
+
+        BufferedWriter bw = new BufferedWriter(new FileWriter("C:/Temp/memo.txt", append));
+        System.out.println("메모 내용을 입력하세요(exit 입력 시 종료):");
+        String line;
+        while (!(line = br.readLine()).equals("exit")) {
+            bw.write(line);
+            bw.newLine();
         }
-        cmdBr.close();
+        bw.close();
         br.close();
+        System.out.println("memo.txt 저장 완료!");
     }
 }

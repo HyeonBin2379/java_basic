@@ -9,11 +9,9 @@ public class Prob9 {
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         BufferedWriter bw = new BufferedWriter(new FileWriter("C:/Temp/output.txt"));
-        while (true) {
-            String input = br.readLine();
-            if (input.equals("exit")) {
-                break;
-            }
+
+        String input;
+        while (!(input = br.readLine()).equals("exit")) {
             bw.write(input + System.lineSeparator());
         }
         bw.flush();
