@@ -2,7 +2,6 @@ package java_advanced_01.day20.reader;
 
 import java.io.FileReader;
 import java.io.Reader;
-import java.util.Arrays;
 
 public class ReaderEx {
 
@@ -43,7 +42,5 @@ public class ReaderEx {
         }
         reader.close();
         System.out.println();
-
-        // 3. 문자열 단위로 읽기
     }
 }
