@@ -13,25 +13,29 @@ import java.util.List;
 public class Prob16 {
 
     public static void main(String[] args) throws IOException {
-        DataOutputStream dos = new DataOutputStream(new FileOutputStream("C:/Temp/students.dat"));
-        dos.writeUTF(String.format("%s, %d, %.1f\n", "김철수", 21, 3.5));
-        dos.writeUTF(String.format("%s, %d, %.1f\n", "이영희", 22, 3.9));
-        dos.writeUTF(String.format("%s, %d, %.1f\n", "박민수", 20, 3.2));
-        dos.flush();
-        dos.close();
-
-        DataInputStream dis = new DataInputStream(new FileInputStream("C:/Temp/students.dat"));
-        List<Student> students = new ArrayList<>();
-        for (int i = 0; i < 3; i++) {
-            String[] tokens = dis.readUTF().split(", ");
-            Student student = Student.builder()
-                    .name(tokens[0])
-                    .age(Integer.parseInt(tokens[1]))
-                    .score(Double.parseDouble(tokens[2]))
-                    .build();
-            students.add(student);
+        try (DataOutputStream dos = new DataOutputStream(new FileOutputStream("C:/Temp/students.dat"))) {
+            dos.writeUTF(String.format("%s, %d, %.1f\n", "김철수", 21, 3.5));
+            dos.writeUTF(String.format("%s, %d, %.1f\n", "이영희", 22, 3.9));
+            dos.writeUTF(String.format("%s, %d, %.1f\n", "박민수", 20, 3.2));
+            dos.flush();
+        } catch (IOException e) {
+            System.out.println(e.getMessage());
         }
-        students.sort(Comparator.comparingInt(Student::getAge));
+
+        List<Student> students = new ArrayList<>();
+        try (DataInputStream dis = new DataInputStream(new FileInputStream("C:/Temp/students.dat"))) {
+            for (int i = 0; i < 3; i++) {
+                String[] tokens = dis.readUTF().split(", ");
+                Student student = Student.builder()
+                        .name(tokens[0])
+                        .age(Integer.parseInt(tokens[1]))
+                        .score(Double.parseDouble(tokens[2]))
+                        .build();
+                students.add(student);
+            }
+        } catch (IOException e) {
+            System.out.println(e.getMessage());
+        }
 
         double total = students.stream()
                 .mapToDouble(Student::getScore)
@@ -39,6 +43,6 @@ public class Prob16 {
         System.out.println("반 총점 = " + total);
         System.out.printf("반 평균 = %.1f\n", total/students.size());
         System.out.println("학생 정보:");
-        students.forEach(System.out::println);
+        students.stream().sorted(Comparator.comparingInt(Student::getAge)).forEach(System.out::println);
     }
 }
