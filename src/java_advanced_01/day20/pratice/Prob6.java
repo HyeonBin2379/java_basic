@@ -10,5 +10,6 @@ public class Prob6 {
         InputStream is = new FileInputStream("C:/Temp/image.jpg");
         OutputStream os = new FileOutputStream("C:/Temp/copy.jpg");
         is.transferTo(os);
+        is.close();
     }
 }

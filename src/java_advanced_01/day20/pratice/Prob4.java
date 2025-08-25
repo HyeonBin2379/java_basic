@@ -15,6 +15,8 @@ public class Prob4 {
             os.write(b);
         }
         os.flush();
+
+        System.out.println("저장완료");
         os.close();
     }
 }

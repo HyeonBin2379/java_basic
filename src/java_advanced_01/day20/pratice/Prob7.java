@@ -19,5 +19,6 @@ public class Prob7 {
             totalSize += byteCnt;
         }
         System.out.println(totalSize);
+        is.close();
     }
 }

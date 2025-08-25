@@ -17,5 +17,6 @@ public class Prob5 {
             }
             System.out.print((byte)data);
         }
+        is.close();
     }
 }
