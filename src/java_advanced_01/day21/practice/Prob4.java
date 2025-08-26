@@ -4,10 +4,16 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 @Data
 @AllArgsConstructor
 class Account implements Serializable {
+
+    @Serial
+    private static final long serialVersionUID = 4L;
 
     private String owner;
     private transient int balance;
@@ -28,19 +34,19 @@ class Account implements Serializable {
 public class Prob4 {
 
     public static void main(String[] args) {
-        String fileName = "C:/Temp/account.dat";
-        try (FileOutputStream fos = new FileOutputStream(fileName);
-             ObjectOutputStream oos = new ObjectOutputStream(fos)) {
-
+        Path path = Paths.get("account.dat");
+        try (ObjectOutputStream oos =
+                     new ObjectOutputStream(Files.newOutputStream(path))) {
             Account account = new Account("철수", 10000);
             oos.writeObject(account);
-
         } catch (IOException e) {
             System.out.println(e.getMessage());
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
 
-        try (FileInputStream fis = new FileInputStream(fileName);
-             ObjectInputStream ois = new ObjectInputStream(fis)) {
+        try (ObjectInputStream ois =
+                     new ObjectInputStream(Files.newInputStream(path))) {
             if (ois.readObject() instanceof Account account) {
                 System.out.println(account);
             }

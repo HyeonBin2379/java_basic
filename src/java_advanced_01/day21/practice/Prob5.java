@@ -4,10 +4,17 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 @Data
 @AllArgsConstructor
 class Product implements Serializable {
+
+    @Serial
+    private static final long serialVersionUID = 5L;
+
     private String name;
     private int price;
 }
@@ -34,25 +41,27 @@ class Order implements Serializable {
 public class Prob5 {
 
     public static void main(String[] args) {
-        String fileName = "C:/Temp/order.dat";
-        try (FileOutputStream fos = new FileOutputStream(fileName);
-             ObjectOutputStream oos = new ObjectOutputStream(fos)) {
+        Path path = Paths.get("order.dat");
+        try (ObjectOutputStream oos =
+                     new ObjectOutputStream(Files.newOutputStream(path))) {
             Product product = new Product("제품", 10000);
             Order order = new Order(1, product);
 
             oos.writeObject(order);
         } catch (IOException e) {
             System.out.println(e.getMessage());
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
 
-        try (FileInputStream fis = new FileInputStream(fileName);
-             ObjectInputStream ois = new ObjectInputStream(fis)) {
+        try (ObjectInputStream ois =
+                     new ObjectInputStream(Files.newInputStream(path))) {
             if (ois.readObject() instanceof Order order) {
                 System.out.println(order);
             }
-        } catch (IOException e) {
+        } catch (IOException | ClassNotFoundException e) {
             System.out.println(e.getMessage());
-        } catch (ClassNotFoundException e) {
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }

@@ -4,10 +4,16 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 @Data
 @AllArgsConstructor
 class Student implements Serializable {
+
+    @Serial
+    private static final long serialVersionUID = 3L;
 
     private String name;
     private int grade;
@@ -16,20 +22,20 @@ class Student implements Serializable {
 public class Prob3 {
 
     public static void main(String[] args) {
-        String fileName = "C:/Temp/students.dat";
-        try (FileOutputStream fos = new FileOutputStream(fileName);
-             ObjectOutputStream oos = new ObjectOutputStream(fos)) {
-
+        Path path = Paths.get("students.dat");
+        try (ObjectOutputStream oos =
+                     new ObjectOutputStream(Files.newOutputStream(path))) {
             oos.writeObject(new Student("김철수", 1));
             oos.writeObject(new Student("박영희", 2));
 
         } catch (IOException e) {
             System.out.println(e.getMessage());
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
 
-        try (FileInputStream fis = new FileInputStream(fileName);
-             ObjectInputStream ois = new ObjectInputStream(fis)) {
-
+        try (ObjectInputStream ois =
+                     new ObjectInputStream(Files.newInputStream(path))) {
             while (true) {
                 if (ois.readObject() instanceof Student student) {
                     System.out.println(student);
@@ -39,9 +45,9 @@ public class Prob3 {
             }
         } catch (EOFException e) {
             System.out.println("파일 읽기를 종료합니다.");
-        } catch (IOException e) {
+        } catch (IOException | ClassNotFoundException e) {
             System.out.println(e.getMessage());
-        } catch (ClassNotFoundException e) {
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }

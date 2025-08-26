@@ -4,6 +4,9 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,10 +24,9 @@ class Book implements Serializable {
 public class Prob2 {
 
     public static void main(String[] args) {
-        String fileName = "C:/Temp/books.dat";
-        try (FileOutputStream fos = new FileOutputStream(fileName);
-             ObjectOutputStream oos = new ObjectOutputStream(fos)) {
-
+        Path path = Paths.get("books.dat");
+        try (ObjectOutputStream oos =
+                     new ObjectOutputStream(Files.newOutputStream(path))) {
             List<Book> books = new ArrayList<>();
             books.add(new Book("책1", 8000));
             books.add(new Book("책2", 10000));
@@ -33,16 +35,18 @@ public class Prob2 {
             oos.writeObject(books);
         } catch (IOException e) {
             System.out.println(e.getMessage());
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
 
-        try (FileInputStream fis = new FileInputStream(fileName);
-             ObjectInputStream ois = new ObjectInputStream(fis)) {
-
+        try (ObjectInputStream ois =
+                     new ObjectInputStream(Files.newInputStream(path))) {
             List<Book> books = (ArrayList<Book>) ois.readObject();
             books.forEach(System.out::println);
-
         } catch (IOException | ClassNotFoundException e) {
             System.out.println(e.getMessage());
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
     }
 }
