@@ -1,7 +1,7 @@
-package java_advanced_01.day22.net.multiserverecho;
+package javasocketprogramming;
 
 import java.io.*;
-import java.net.*;
+import java.net.Socket;
 import java.nio.charset.StandardCharsets;
 
 public class Client {
@@ -18,14 +18,7 @@ public class Client {
              BufferedReader keyboard = new BufferedReader(
                      new InputStreamReader(System.in, StandardCharsets.UTF_8))
         ) {
-            // 사용할 닉네임 입력
-            System.out.print("NICK ");
-            String userName = keyboard.readLine();
-            if (userName.trim().isEmpty()) {
-                throw new IOException("닉네임에는 공백을 사용할 수 없습니다.");
-            }
-            System.out.printf("[%s] joined to %s:%d\n", userName, host, port);
-
+            System.out.println("[Client] Connected to " + host + ":" + port);
             // 서버의 첫 인사 수신
             String greet = in.readLine();
             if (greet != null) {
@@ -57,7 +50,7 @@ public class Client {
             }
             System.out.println("[Client] Bye.");
         } catch (IOException e) {
-            System.err.println("[Client] ERR " + e.getMessage());
+            System.err.println("[Client] Error: " + e.getMessage());
         }
     }
 }

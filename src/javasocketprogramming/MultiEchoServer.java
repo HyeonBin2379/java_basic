@@ -1,7 +1,8 @@
-package java_advanced_01.day22.net.multiserverecho;
+package javasocketprogramming;
 
 import java.io.*;
-import java.net.*;
+import java.net.ServerSocket;
+import java.net.Socket;
 import java.nio.charset.StandardCharsets;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -61,7 +62,7 @@ public class MultiEchoServer {
                             new InputStreamReader(socket.getInputStream(), StandardCharsets.UTF_8));
                     // 클라이언트로부터 수신한 채팅 메시지를 콘솔창에 출력하는 스트림
                     PrintWriter out = new PrintWriter(
-                            new OutputStreamWriter(socket.getOutputStream(), StandardCharsets.UTF_8), true)
+                            new OutputStreamWriter(socket.getOutputStream(), StandardCharsets.UTF_8), false)
             ) {
                 out.println("Welcome! You are Client#" + clientId + ". Type 'exit' to quit.");
                 String line;
