@@ -66,6 +66,4 @@ public class ChatClient {
             System.err.printf("[%s] Error: %s\n", nickname, e.getMessage());
         }
     }
-
-    private static class
 }
