@@ -3,13 +3,9 @@ package java_advanced_01.day22.net.chatting;
 import java.io.*;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
 
 public class ChatClient {
 
-    private static Thread thread;
     private static String nickname;
 
     public static void main(String[] args) {
@@ -30,8 +26,7 @@ public class ChatClient {
             if (nickname.trim().isEmpty()) {
                 throw new IOException("닉네임에는 공백을 사용할 수 없습니다.");
             }
-            out.println(nickname);
-            System.out.printf("[%s] Connected to %s:%d\n", nickname, host, port);
+            out.printf("[%s] Connected to %s:%d\n", nickname, host, port);
 
             // 서버의 첫 인사 수신
             String greet = in.readLine();
@@ -41,23 +36,25 @@ public class ChatClient {
 
             String msg;
             while (true) {
-                // 서버와 연결된 클라이언트에게 작성한 메시지를 전송
-                System.out.printf("%s> ", nickname);
-                msg = keyboard.readLine();
-                if (msg == null) {
-                    break;   // EOF (Ctrl+D/Ctrl+Z)
-                }
-                if (msg.trim().isEmpty()) {
-                    out.flush();
-                }
-                out.println(msg);
+                // 채팅 메시지를 작성하여 서버에게 전송
+                synchronized (System.out) {
+                    System.out.printf("%s> ", nickname);
+                    msg = keyboard.readLine();
+                    if (msg == null) {
+                        break;   // EOF (Ctrl+D/Ctrl+Z)
+                    }
+                    if (msg.trim().isEmpty()) {
+                        out.flush();
+                    }
+                    out.println(msg);
 
-                // 서버 측의 응답을 수신
-                String resp = in.readLine();
-                if (resp != null) {
-                    throw new EOFException("Server closed connection.");
+                    // 다른 클라이언트 측의 채팅 메시지를 출력
+                    String resp = in.readLine();
+                    if (resp == null) {
+                        throw new EOFException("Server closed connection.");
+                    }
+                    System.out.println(resp);
                 }
-                System.out.println(resp);
 
                 // 채팅창에 quit이 입력되면 클라이언트를 종료
                 if ("/quit".equalsIgnoreCase(msg.trim())) {
@@ -65,18 +62,10 @@ public class ChatClient {
                 }
             }
             System.out.printf("[%s] Bye.\n", nickname);
-        } catch (EOFException e) {
-            System.out.println(e.getMessage());
         } catch (IOException e) {
             System.err.printf("[%s] Error: %s\n", nickname, e.getMessage());
         }
     }
 
-    private static void printChat(BufferedReader in) throws IOException {
-        String resp = in.readLine();
-        if (resp == null) {
-            throw new EOFException("Server closed connection.");
-        }
-        System.out.println(resp);
-    }
+    private static class
 }
