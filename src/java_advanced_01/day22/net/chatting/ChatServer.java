@@ -1,20 +1,24 @@
-package javasocketprogramming;
+package java_advanced_01.day22.net.chatting;
 
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class MultiEchoServer {
+public class ChatServer {
     private static final int PORT = 5000;
 
     // ExecutorService: 스레드 풀을 제공하기 위한 클래스
     private static final ExecutorService POOL = Executors.newCachedThreadPool();
     // AtomicInteger: 원자화된 정수 타입
     private static final AtomicInteger CLIENT_SEQ = new AtomicInteger(1);
+    private static final Map<String, PrintWriter> clients = Collections.synchronizedMap(new HashMap<>());
 
     public static void main(String[] args) {
         System.out.println("[Server] Starting on port " + PORT);
@@ -33,7 +37,6 @@ public class MultiEchoServer {
 
                 // 멀티스레드 환경에서 서버와 연결된 클라이언트를 식별하기 위해 일련번호를 부여
                 int id = CLIENT_SEQ.getAndIncrement();
-                System.out.println("[Server] Client#" + id + " connected from " + socket.getRemoteSocketAddress());
 
                 POOL.submit(new ClientHandler(socket, id));
             }
@@ -42,10 +45,12 @@ public class MultiEchoServer {
         }
     }
 
-    // 개별 클라이언트-서버 간 채팅 메시지 송수신을 스레드 단위에서 수행됨
+    // 클라이언트 -> 서버 채팅 메시지 전송은 스레드 단위에서 수행됨
     private static class ClientHandler implements Runnable {
         private final Socket socket;
         private final int clientId;
+
+        private String nickname;
 
         // 서버와 연결된 특정 클라이언트와의 메시지 송수신 작업을 처리
         // 한 스레드당 1개의 서버 소켓을 사용하여 클라이언트의 요청을 처리
@@ -62,24 +67,43 @@ public class MultiEchoServer {
                             new InputStreamReader(socket.getInputStream(), StandardCharsets.UTF_8));
                     // 클라이언트로부터 수신한 채팅 메시지를 콘솔창에 출력하는 스트림
                     PrintWriter out = new PrintWriter(
-                            new OutputStreamWriter(socket.getOutputStream(), StandardCharsets.UTF_8), false)
+                            new OutputStreamWriter(socket.getOutputStream(), StandardCharsets.UTF_8), true)
             ) {
-                out.println("Welcome! You are Client#" + clientId + ". Type 'exit' to quit.");
+                nickname = in.readLine();
+                if (clients.containsKey(nickname)) {
+                    throw new IOException("중복된 이름입니다.");
+                }
+                clients.put(nickname, out);
+                System.out.println("[Server] " + nickname + " joined from " + socket.getRemoteSocketAddress());
+
+                out.println("Welcome! You are " + nickname + ". Type 'quit' to quit.");
                 String line;
                 while ((line = in.readLine()) != null) {
-                    System.out.println("[Server] From Client#" + clientId + ": " + line);
-                    if ("exit".equalsIgnoreCase(line.trim())) {
-                        out.println("Bye Client#" + clientId);
+
+                    if ("/quit".equalsIgnoreCase(line.trim())) {
+                        out.println("Bye " + nickname);
                         break;
                     }
+                    if ("/who".equalsIgnoreCase(line.trim())) {
+                        out.printf("USERS %s\n", String.join(", ", clients.keySet()));
+                    }
+
                     // 받은 메시지를 그대로 돌려주는 에코
-                    out.println("Echo to #" + clientId + ": " + line);
+//                    out.println("Echo to #" + nickname + ": " + line);
+                    broadcast(line);
+                    System.out.println("[Server] From " + nickname + ": " + line);
                 }
             } catch (IOException e) {
-                System.err.println("[Server] Client#" + clientId + " I/O error: " + e.getMessage());
+                System.err.println("[Server] " + nickname + " I/O error: " + e.getMessage());
             } finally {
                 try { socket.close(); } catch (IOException ignored) {}
-                System.out.println("[Server] Client#" + clientId + " disconnected.");
+                System.out.println("[Server] " + nickname + " left.");
+            }
+        }
+
+        private void broadcast(String message) {
+            synchronized (clients) {
+                clients.forEach((nick, writer) -> writer.println("Echo to " + nickname + ": " + message));
             }
         }
     }
