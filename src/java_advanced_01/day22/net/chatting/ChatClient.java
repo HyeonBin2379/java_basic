@@ -26,9 +26,9 @@ public class ChatClient {
             if (nickname.trim().isEmpty()) {
                 throw new IOException("닉네임에는 공백을 사용할 수 없습니다.");
             }
-            out.printf("[%s] Connected to %s:%d\n", nickname, host, port);
+            out.println(nickname);
 
-            // 서버의 첫 인사 수신
+            // 서버의 첫 인사(Welcome ~ ) 수신
             String greet = in.readLine();
             if (greet != null) {
                 System.out.println(greet);
@@ -37,24 +37,22 @@ public class ChatClient {
             String msg;
             while (true) {
                 // 채팅 메시지를 작성하여 서버에게 전송
-                synchronized (System.out) {
-                    System.out.printf("%s> ", nickname);
-                    msg = keyboard.readLine();
-                    if (msg == null) {
-                        break;   // EOF (Ctrl+D/Ctrl+Z)
-                    }
-                    if (msg.trim().isEmpty()) {
-                        out.flush();
-                    }
-                    out.println(msg);
-
-                    // 다른 클라이언트 측의 채팅 메시지를 출력
-                    String resp = in.readLine();
-                    if (resp == null) {
-                        throw new EOFException("Server closed connection.");
-                    }
-                    System.out.println(resp);
+                System.out.printf("%s> ", nickname);
+                msg = keyboard.readLine();
+                if (msg == null) {
+                    break;   // EOF (Ctrl+D/Ctrl+Z)
                 }
+                if (msg.trim().isEmpty()) {
+                    out.flush();
+                }
+                out.println(msg);
+
+                // 서버 측에서 브로드캐스팅한 채팅 메시지를 출력
+                String resp = in.readLine();
+                if (resp == null) {
+                    throw new EOFException("Server closed connection.");
+                }
+                System.out.println(resp);
 
                 // 채팅창에 quit이 입력되면 클라이언트를 종료
                 if ("/quit".equalsIgnoreCase(msg.trim())) {
