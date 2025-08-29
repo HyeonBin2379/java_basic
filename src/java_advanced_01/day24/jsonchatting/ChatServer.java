@@ -1,8 +1,11 @@
 package java_advanced_01.day24.jsonchatting;
 
+import lombok.Getter;
 import org.json.*;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Collection;
@@ -21,7 +24,8 @@ public class ChatServer {
 
     // 서버-클라이언트는 1:N 관계 -> 스레드 풀 사용(개수는 지정)
     // 서버는 클라이언트 1개당 통신용 스레드 1개를 할당 -> 통신 종료 시 스레드 반환
-    static final ExecutorService THREAD_POOL = Executors.newFixedThreadPool(100);
+    @Getter
+    private static final ExecutorService THREAD_POOL = Executors.newFixedThreadPool(100);
 
     private static final int PORT = 50001;
     // 100개의 클라이언트와의 동시 채팅을 관리하기 위한 맵
@@ -50,12 +54,12 @@ public class ChatServer {
                 Socket socket = serverSocket.accept();
                 // 2. 통신용 SocketClient를 반복 생성
                 SocketClient client = new SocketClient(this, socket);
-
-
-                socket.close();
+                client.receive();
             }
         } catch (IOException e) {
             System.out.println(e.getMessage());
+        } catch (Exception e) {
+
         }
     }
 
@@ -96,7 +100,7 @@ public class ChatServer {
                 .forEach(client -> client.send(json));
     }
 
-    public void stop(ServerSocket serverSocket) {
+    public void stop() {
         try {
             serverSocket.close();
             THREAD_POOL.shutdown();
@@ -105,5 +109,27 @@ public class ChatServer {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public static void main(String[] args) {
+        try (BufferedReader br = new BufferedReader(new InputStreamReader(System.in));) {
+            ChatServer chatServer = new ChatServer();
+            chatServer.start();
+
+            System.out.println("----------------------------------------------------");
+            System.out.println("서버를 종료하려면 q를 입력하고 Enter.");
+            System.out.println("----------------------------------------------------");
+
+            while(true) {
+                String key = br.readLine();
+                if (key.equals("q")) {
+                    break;
+                }
+            }
+            chatServer.stop();
+        } catch (Exception e) {
+            System.out.println("[서버] " + e.getMessage());
+        }
+
     }
 }

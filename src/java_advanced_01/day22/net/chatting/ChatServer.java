@@ -5,6 +5,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -14,7 +15,7 @@ public class ChatServer {
 
     // ExecutorService: 스레드 풀을 제공하기 위한 클래스
     private static final ExecutorService POOL = Executors.newCachedThreadPool();
-    private static final Map<String, PrintWriter> clients = Collections.synchronizedMap(new HashMap<>());
+    private static final Map<String, PrintWriter> clients = new ConcurrentHashMap<>();
 
     public static void main(String[] args) {
         System.out.println("Starting on port " + PORT);
@@ -32,7 +33,6 @@ public class ChatServer {
                 Socket socket = serverSocket.accept();
 
                 // 멀티스레드 환경에서 서버와 연결된 클라이언트를 식별하기 위해 일련번호를 부여
-
                 POOL.submit(new ClientHandler(socket));
             }
         } catch (IOException e) {

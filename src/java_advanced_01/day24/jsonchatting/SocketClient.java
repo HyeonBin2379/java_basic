@@ -8,8 +8,7 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.Socket;
-
-import static java_advanced_01.day24.jsonchatting.ChatServer.THREAD_POOL;
+import java.util.concurrent.ExecutorService;
 
 public class SocketClient {
 
@@ -55,7 +54,8 @@ public class SocketClient {
     * - 클라이언트가 채팅을 종료할 경우, dis.UTF()에서 IOException 예외 처리 후, chatRoom에 저장된 SocketClient를 제거
     * */
     public void receive() {
-        THREAD_POOL.execute(this::handleJson);
+        ExecutorService threadPool = ChatServer.getTHREAD_POOL();
+        threadPool.execute(this::handleJson);
     }
     private void handleJson() {
         try {
@@ -65,19 +65,21 @@ public class SocketClient {
                 String command = obj.getString("command");
 
                 switch (command) {
-                    case "incomming":   // 입장안내
+                    case "incoming" -> {
                         this.chatName = obj.getString("data");
                         chatServer.sendToAll(this, "입장하셨습니다.");
                         chatServer.addSocketClient(this);
-                        break;
-                    case "message":
-                        String message = obj.getString("message");
+                    }
+                    case "message" -> {
+                        String message = obj.getString("data");
+                        System.out.printf("[%s] %s\n", chatName, message);
                         chatServer.sendToAll(this, message);
-                        break;
+                    }
                 }
             }
         } catch (IOException e) {
             chatServer.sendToAll(this, "퇴장하셨습니다.");
+            chatServer.removeSocketClient(this);
             System.out.println(e.getMessage());
         }
     }
