@@ -5,30 +5,31 @@ import java.net.Socket;
 
 public class ChatClient {
     //필드
+    private static DataInputStream dis;
+    private static DataOutputStream dos;
+
     private Socket socket;
-    private DataInputStream dis;
-    private DataOutputStream dos;
     private String chatName;
 
     public void connect() throws IOException {
         socket = new Socket("localhost", 5000);
         dis = new DataInputStream(socket.getInputStream());
         dos = new DataOutputStream(socket.getOutputStream());
-        System.out.println("[클라이언트] 서버에 연결됨");
+        System.out.println("OK [클라이언트] 서버에 연결됨");
     }
 
     public void receive() {
         Thread thread = new Thread(() -> {
             try {
-                while(true) {
+                while (true) {
                     String message = dis.readUTF();
                     if (message.trim().isEmpty()) {
                         continue;
                     }
-                    System.out.println("[" + chatName + "] " + message);
+                    System.out.println(message);
                 }
             } catch(Exception e1) {
-                System.out.println("[클라이언트] 서버 연결 끊김");
+                System.out.println("[클라이언트] 서버와의 연결이 종료됨");
                 System.exit(0);
             }
         });
@@ -41,48 +42,48 @@ public class ChatClient {
         dos.flush();
     }
 
-
     //메소드: 서버 연결 종료
-    public void unconnect() throws IOException {
+    public void disconnect() throws IOException {
         socket.close();
     }
 
 
     //메소드: 메인
     public static void main(String[] args) {
-        try (BufferedReader br = new BufferedReader(new InputStreamReader(System.in))) {
+        try {
             ChatClient chatClient = new ChatClient();
             chatClient.connect();
 
-            String firstMsg = br.readLine();
-            String[] messageTokens = firstMsg.split(" ");
-            if (!messageTokens[0].startsWith("NICK") || messageTokens.length != 2) {
-                throw new IOException("올바른 닉네임 입력 형식이 아닙니다.");
-            }
-            chatClient.chatName = messageTokens[1].trim();
-            chatClient.send(firstMsg);
+            BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+            String firstMessage = br.readLine();
+            chatClient.validateAndRegister(firstMessage);
+            chatClient.send(firstMessage);
             chatClient.receive();
 
             System.out.println("--------------------------------------------------");
             System.out.println("보낼 메시지를 입력하고 Enter");
-            System.out.println("채팅를 종료하려면 q를 입력하고 Enter");
+            System.out.println("채팅를 종료하려면 /quit을 입력하고 Enter");
             System.out.println("--------------------------------------------------");
-            while(true) {
-                String message;
-                synchronized (System.out) {
-                    System.out.print(chatClient.chatName + " ");
-                    message = br.readLine();
-                    if (firstMsg.equalsIgnoreCase("q")) {
-                        break;
-                    }
-                    chatClient.send(String.format("[%s] %s\n", chatClient.chatName, message.trim()));
+
+            while (true) {
+                String message = br.readLine();
+                chatClient.send(message.trim());
+                if (message.equalsIgnoreCase("/quit")) {
+                    break;
                 }
             }
-            chatClient.unconnect();
+            br.close();
+            chatClient.disconnect();
         } catch(IOException e) {
-            System.out.println("[클라이언트] 서버 연결 안됨");
+            System.out.println("ERR [클라이언트] 서버 연결 안됨");
         }
     }
 
-
+    private void validateAndRegister(String firstMessage) throws IOException {
+        String[] messageTokens = firstMessage.split(" ");
+        if (!messageTokens[0].equals("NICK") || messageTokens.length != 2) {
+            throw new IOException("ERR [클라이언트] 올바른 닉네임 입력 형식이 아닙니다.");
+        }
+        this.chatName = messageTokens[1].trim();
+    }
 }

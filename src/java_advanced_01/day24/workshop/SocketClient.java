@@ -50,35 +50,36 @@ public class SocketClient {
                     String receivedChat = dis.readUTF();
                     List<String> tokens = Arrays.stream(receivedChat.split(" ")).toList();
 
-//                    JSONObject jsonObject = new JSONObject(receivedChat);
-//                    String command = jsonObject.getString("command");
                     switch (tokens.get(0)) {
                         case "NICK":
                             this.chatName = tokens.get(1);
-                            synchronized (System.out) {
-                                System.out.printf("[%s] %s\n", chatName, receivedChat);
-                                chatServer.sendToAll(String.format("%s joined.\n", this.chatName));
-                            }
                             chatServer.addSocketClient(this);
+                            chatServer.sendToAll(this, String.format("%s joined.", this.chatName));
                             break;
                         case "/who":
-                            String clientNames = getClientNames();
-                            chatServer.whisper(chatName, clientNames);
+                            String clientNames = String.format("USERS %s", getClientNames());
+                            System.out.printf("[%s] %s\n", chatName, receivedChat);
+                            send(clientNames);
                             break;
                         case "/w":
                             String receiver = tokens.get(1);
-                            String newMessage = receivedChat.replace("/w "+receiver, "");
+                            String newMessage = String.format("%s: %s", chatName, receivedChat.replace("/w " + receiver, "").trim());
                             chatServer.whisper(receiver, newMessage.trim());
                             break;
+                        case "/quit":
+                            chatServer.sendToAll(this, String.format("%s left.", chatName));
+                            chatServer.removeSocketClient(this);
+                            return;
                         default:
-                            synchronized (System.out) {
-                                System.out.printf("[%s] %s\n", chatName, receivedChat);
-                                chatServer.sendToAll(receivedChat);
+                            if (!receivedChat.trim().isEmpty()) {
+                                String chatMessage = String.format("[%s] %s", chatName, receivedChat);
+                                System.out.println(chatMessage);
+                                chatServer.sendToAll(this, chatMessage);
                             }
                     }
                 }
             } catch(IOException e) {
-                chatServer.sendToAll(String.format("%s left.\n", chatName));
+                chatServer.sendToAll(this, String.format("%s disconnected.", chatName));
                 chatServer.removeSocketClient(this);
             }
         });
@@ -87,6 +88,7 @@ public class SocketClient {
         Collection<SocketClient> connections = chatServer.chatRoom.values();
         return connections.stream()
                 .map(socketClient -> socketClient.chatName)
+                .sorted()   // 멀티스레딩 환경에서 저장 순서를 유지
                 .collect(Collectors.joining(", "));
     }
 
