@@ -11,6 +11,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import javax.swing.plaf.basic.BasicInternalFrameTitlePane.SystemMenuBar;
 
 public class ChatServer {
     //3개의 필드
@@ -23,9 +24,10 @@ public class ChatServer {
         serverSocket = new ServerSocket(5000);
         System.out.println( "OK [서버] 시작됨");
 
+        // Ctrl+C 누를 시 강제종료
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-            System.out.println("OK 서버 강제종료");
-            this.stop();
+            System.out.println("\nserver shut down...");
+            threadPool.shutdownNow();
         }));
 
         Thread thread = new Thread(() -> {
@@ -69,9 +71,9 @@ public class ChatServer {
     }
 
     // 1명의 클라이언트에게만 메시지 전달
-    public void whisper(String receiverName, String message) {
-        SocketClient socketClient = chatRoom.get(receiverName);
-        socketClient.send(String.format("%s << %s", receiverName, message));
+    public void whisper(String receiver, String sender, String message) {
+        SocketClient socketClient = chatRoom.get(receiver);
+        socketClient.send(String.format("[%s << %s] %s", receiver, sender, message));
     }
 
     //서버종료 : stop()

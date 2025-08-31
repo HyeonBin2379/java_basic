@@ -10,7 +10,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
-//클라이언트와 1:1 로 통신하는 역할
+// 서버 측에서 클라이언트와 1:1 로 통신하기 위한 창구 역할 수행
 public class SocketClient {
 
     //필요 객체 (필드)
@@ -19,12 +19,14 @@ public class SocketClient {
     DataInputStream dis;
     DataOutputStream dos;
     String clientIp;
-    String chatName;//닉네임(대화명)
+    String chatName;    // 연결된 클라이언트 측의 닉네임(대화명)
 
     public SocketClient(ChatServer chatServer, Socket socket) {
         try {
             this.chatServer = chatServer;
             this.socket = socket;
+
+            // 클라이언트 소켓과의 통신 회선 설정
             this.dis = new DataInputStream(socket.getInputStream());
             this.dos = new DataOutputStream(socket.getOutputStream());
             InetSocketAddress isa = (InetSocketAddress) socket.getRemoteSocketAddress();
@@ -36,13 +38,6 @@ public class SocketClient {
         }
     }
 
-    //메소드 : JSON 메세지 받기  : 클라이어트가 보낸 JSON 메시지를 읽는 업무를 수행한다.
-    // dis.readUTF()로 JSON을 읽고 JSONObject로 파싱해서 command값을 얻어내어 처리함
-    //command : incomming=> JSON에서 대화명을 읽는다. chatRoom에 SocketClient를 추가
-    //            message => 메세지를 읽고 연결되어 있는 모든 클라이언트들에게 메시지를 보낸다.
-    //          클라이언트가 채팅을 종료할 경우 dis.UTF()에서 IOException발생하므로 예외처리를 하여
-    // chatRoom에 저장되어 있는 SocketClient를 제거한다.
-
     public void receive() {
         chatServer.threadPool.execute(() -> {
             try {
@@ -50,11 +45,12 @@ public class SocketClient {
                     String receivedChat = dis.readUTF();
                     List<String> tokens = Arrays.stream(receivedChat.split(" ")).toList();
 
+                    // 아래의 키워드로 시작되는 메시지는 서버에만 출력됨
                     switch (tokens.get(0)) {
                         case "NICK":
                             this.chatName = tokens.get(1);
                             chatServer.addSocketClient(this);
-                            chatServer.sendToAll(this, String.format("%s joined.", this.chatName));
+                            chatServer.sendToAll(this, String.format("%s joined.", tokens.get(1)));
                             break;
                         case "/who":
                             String clientNames = String.format("USERS %s", getClientNames());
@@ -63,8 +59,10 @@ public class SocketClient {
                             break;
                         case "/w":
                             String receiver = tokens.get(1);
-                            String newMessage = String.format("%s: %s", chatName, receivedChat.replace("/w " + receiver, "").trim());
-                            chatServer.whisper(receiver, newMessage.trim());
+                            String newMessage = receivedChat.replace("/w " + receiver, "");
+
+                            System.out.printf("[%s] %s\n", chatName, receivedChat);
+                            chatServer.whisper(receiver, chatName, newMessage.trim());
                             break;
                         case "/quit":
                             chatServer.sendToAll(this, String.format("%s left.", chatName));
@@ -79,11 +77,13 @@ public class SocketClient {
                     }
                 }
             } catch(IOException e) {
-                chatServer.sendToAll(this, String.format("%s disconnected.", chatName));
                 chatServer.removeSocketClient(this);
+                chatServer.sendToAll(this, String.format("%s disconnected.", chatName));
+                System.out.println(e.getMessage());
             }
         });
     }
+
     private String getClientNames() {
         Collection<SocketClient> connections = chatServer.chatRoom.values();
         return connections.stream()
@@ -92,7 +92,7 @@ public class SocketClient {
                 .collect(Collectors.joining(", "));
     }
 
-    //메소드 : JSON 보내기  연결된 클라이언트로 JSON메세지를 보내는 기능
+    //메소드 : 연결된 클라이언트로 메세지 전송
     public void send(String chat) {
         try {
             dos.writeUTF(chat);

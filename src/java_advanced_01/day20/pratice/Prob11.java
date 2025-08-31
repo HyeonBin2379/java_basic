@@ -15,7 +15,7 @@ public class Prob11 {
         String mode = br.readLine();
         boolean append = mode.equalsIgnoreCase("append");
 
-        BufferedWriter bw = new BufferedWriter(new FileWriter("C:/Temp/memo.txt", append));
+        BufferedWriter bw = new BufferedWriter(new FileWriter("C:/Temp/README.md", append));
         System.out.println("메모 내용을 입력하세요(exit 입력 시 종료):");
         String line;
         while (!(line = br.readLine()).equals("exit")) {
@@ -24,6 +24,6 @@ public class Prob11 {
         }
         bw.close();
         br.close();
-        System.out.println("memo.txt 저장 완료!");
+        System.out.println("README.md 저장 완료!");
     }
 }

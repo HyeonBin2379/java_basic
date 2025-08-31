@@ -29,6 +29,7 @@ public class ChatClient {
                     System.out.println(message);
                 }
             } catch(Exception e1) {
+                // 서버 강제종료 시 실행 중인 모든 클라이언트 종료
                 System.out.println("disconnected to server");
                 System.exit(0);
             }
@@ -47,13 +48,13 @@ public class ChatClient {
         socket.close();
     }
 
-
     //메소드: 메인
     public static void main(String[] args) {
         try {
             ChatClient chatClient = new ChatClient();
             chatClient.connect();
 
+            // 닉네임 입력은 최초 1회만 수행
             BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
             String firstMessage = br.readLine();
             chatClient.validateAndRegister(firstMessage);
@@ -79,11 +80,14 @@ public class ChatClient {
         }
     }
 
-    private void validateAndRegister(String firstMessage) throws IOException {
+    public void validateAndRegister(String firstMessage) throws IOException {
         String[] messageTokens = firstMessage.split(" ");
         if (!messageTokens[0].equals("NICK") || messageTokens.length != 2) {
-            throw new IOException("ERR [클라이언트] 올바른 닉네임 입력 형식이 아닙니다.");
+            throw new IOException("ERR [클라이언트] 메시지의 형식이 올바르지 않습니다.");
         }
-        this.chatName = messageTokens[1].trim();
+        if (messageTokens[1].trim().isEmpty() || messageTokens[1].contains(" ")) {
+            throw new IOException("ERR [클라이언트] 닉네임에는 공백 및 빈 문자열을 사용할 수 없습니다.");
+        }
+        chatName = messageTokens[1].trim();
     }
 }
