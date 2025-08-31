@@ -23,6 +23,11 @@ public class ChatServer {
         serverSocket = new ServerSocket(5000);
         System.out.println( "OK [서버] 시작됨");
 
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            System.out.println("OK 서버 강제종료");
+            this.stop();
+        }));
+
         Thread thread = new Thread(() -> {
             try {
                 while(true) {

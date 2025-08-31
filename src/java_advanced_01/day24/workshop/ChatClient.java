@@ -15,7 +15,7 @@ public class ChatClient {
         socket = new Socket("localhost", 5000);
         dis = new DataInputStream(socket.getInputStream());
         dos = new DataOutputStream(socket.getOutputStream());
-        System.out.println("OK [클라이언트] 서버에 연결됨");
+        System.out.println("connected to server");
     }
 
     public void receive() {
@@ -29,7 +29,7 @@ public class ChatClient {
                     System.out.println(message);
                 }
             } catch(Exception e1) {
-                System.out.println("[클라이언트] 서버와의 연결이 종료됨");
+                System.out.println("disconnected to server");
                 System.exit(0);
             }
         });
