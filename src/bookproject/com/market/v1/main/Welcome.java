@@ -87,6 +87,11 @@ public class Welcome {
 
     // 장바구니 비우기
     public void menuCartClear() {
+        if (!(mUser instanceof Admin)) {
+            System.out.println("권한이 없습니다.");
+            return;
+        }
+
         // 장바구니가 빈 경우
         if (mCart.isCartEmpty()) {
             System.out.println("장바구니의 항목이 없습니다.");
@@ -107,6 +112,11 @@ public class Welcome {
 
     // 바구니에 항목 추가하기
     public void menuCartAddItem(BookManager bookManager) {
+        if (!(mUser instanceof Admin)) {
+            System.out.println("권한이 없습니다.");
+            return;
+        }
+
         // 도서 목록 출력
         mCart.printBookList(bookManager.getBookList());
 
@@ -224,6 +234,10 @@ public class Welcome {
     }
 
     public void menuAdminLogin() {
+        if (mUser instanceof Admin) {
+            System.out.println("이미 관리자계정으로 로그인했습니다.");
+            return;
+        }
         // 관리자 정보 입력 -> 관리자계정 로그인 시도
         System.out.println("관리자 정보를 입력하세요");
         System.out.print("아이디 : ");
@@ -238,6 +252,7 @@ public class Welcome {
         if (loginID.equals(admin.getId()) && loginPW.equals(admin.getPassword())) {
             // 일치하면 관리자의 인적사항을 모두 출력
             System.out.printf(ADMIN_INFO.getText(), admin.getName(), admin.getPhone(), admin.getId(), admin.getPassword());
+            mUser = admin;
             return;
         }
         System.out.println("관리자 정보가 일치하지 않습니다.");
